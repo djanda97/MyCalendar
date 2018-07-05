@@ -4,4 +4,5 @@ public class MyCalendarTester
     {
         System.out.println("Calendar");
     }
+    System.out.println("Calendar");
 }
