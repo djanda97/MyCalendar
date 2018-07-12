@@ -44,81 +44,81 @@ public class MyCalendarTester
     public static void main(String[] args)
     {
         CalendarView view = new CalendarView();
-//        view.setLayout(new FlowLayout());
-//        view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        view.setVisible(true);
-//		GregorianCalendar cal = new GregorianCalendar(); // capture today
-//		option = new Scanner(System.in);
-//		boolean load = false;
-//		printCalendar(cal, "regular");
-//
-//		String op = " ";
-//
-//		while (! "q".equalsIgnoreCase(op))
-//		{
-//			display();
-//			op = option.nextLine();
-//			op = op.toUpperCase();
-//			switch(op)
-//			{
-//				case "L":
-//					events = readFromFile(true);
-//					load = true;
-//					break;
-//
-//				case "V":
-//					view(cal);
-//					break;
-//
-//				case "C":
-//					Event e = createEvent();
-//					if(isConflicting(e)) {
-//						{
-//							System.out.println("Conflicting event detected! Change the event time or date or both!!");
-//							createEvent();
-//						}
-//					}
-//					events.add(e);
-//					break;
-//
-//				case "G":
-//					gotoView(cal);
-//					break;
-//
-//				case "E":
-//					eventSort();
-//					System.out.println();
-//					int printYear = -1;
-//					for(Event event : events) {
-//						if(event.getStartTime().get(Calendar.YEAR) != printYear) {
-//							printYear = event.getStartTime().get(Calendar.YEAR);
-//							System.out.println(printYear);
-//						}
-//						event.prettyPrintEvents();
-//					}
-//					break;
-//
-//				case "D":
-//					delete();
-//					break;
-//
-//				case "Q":
-//					if (!load) {
-//						ArrayList<Event> oldEvents = readFromFile(false);
-//						events.addAll(oldEvents);
-//					}
-//					eventSort();
-//					if(events != null && events.size() > 0) {
-//						writeToFile();
-//					}
-//					System.out.println("Bye!");
-//					break;
-//
-//				default:
-//					System.out.println("Invalid Input!");
-//					break;
-//			}
-//		}
+        view.setLayout(new FlowLayout());
+        view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        view.setVisible(true);
+		GregorianCalendar cal = new GregorianCalendar(); // capture today
+		option = new Scanner(System.in);
+		boolean load = false;
+		printCalendar(cal, "regular");
+
+		String op = " ";
+
+		while (! "q".equalsIgnoreCase(op))
+		{
+			display();
+			op = option.nextLine();
+			op = op.toUpperCase();
+			switch(op)
+			{
+				case "L":
+					events = readFromFile(true);
+					load = true;
+					break;
+
+				case "V":
+					view(cal);
+					break;
+
+				case "C":
+					Event e = createEvent();
+					if(isConflicting(e)) {
+						{
+							System.out.println("Conflicting event detected! Change the event time or date or both!!");
+							createEvent();
+						}
+					}
+					events.add(e);
+					break;
+
+				case "G":
+					gotoView(cal);
+					break;
+
+				case "E":
+					eventSort();
+					System.out.println();
+					int printYear = -1;
+					for(Event event : events) {
+						if(event.getStartTime().get(Calendar.YEAR) != printYear) {
+							printYear = event.getStartTime().get(Calendar.YEAR);
+							System.out.println(printYear);
+						}
+						event.prettyPrintEvents();
+					}
+					break;
+
+				case "D":
+					delete();
+					break;
+
+				case "Q":
+					if (!load) {
+						ArrayList<Event> oldEvents = readFromFile(false);
+						events.addAll(oldEvents);
+					}
+					eventSort();
+					if(events != null && events.size() > 0) {
+						writeToFile();
+					}
+					System.out.println("Bye!");
+					break;
+
+				default:
+					System.out.println("Invalid Input!");
+					break;
+			}
+		}
 
     }
 
