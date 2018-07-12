@@ -23,8 +23,9 @@ public class CalendarView extends JFrame
 
         // define left side panel
         JPanel leftPanel = new JPanel();
+        leftPanel.setLayout(new BorderLayout());
         leftPanel.add(leftTopBarPanel, BorderLayout.NORTH);
-        leftPanel.add(calendarPanel, BorderLayout.SOUTH);
+        leftPanel.add(calendarPanel, BorderLayout.CENTER);
 
         // R-1 right top bar panel
         RightTopBarPanel rightTopBarPanel = new RightTopBarPanel();
@@ -34,6 +35,7 @@ public class CalendarView extends JFrame
 
         // define right side panel
         JPanel rightPanel = new JPanel();
+        rightPanel.setLayout(new BorderLayout());
         rightPanel.add(rightTopBarPanel, BorderLayout.NORTH);
         rightPanel.add(eventPanel, BorderLayout.CENTER); // is able to add after rightpanel is defined.
 
