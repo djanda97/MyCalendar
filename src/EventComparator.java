@@ -5,12 +5,44 @@ import java.util.Comparator;
  * 
  */
 public class EventComparator implements Comparator<Event>{
-	@Override
+	
 	/**
 	 * compares objects according to date and start date
 	 */
 	public int compare(Event o1, Event o2) 
 	{
-		return (int)(o1.getStartTime().compareTo(o2.getStartTime()));	
+		if (o1.getYear() > o2.getYear())
+        {
+            return 1;
+        }
+		if (o1.getYear() < o2.getYear())
+        {
+            return -1;
+        }
+		if (o1.getStartMonth() > o2.getStartMonth())
+        {
+            return 1;
+        }
+		if (o1.getStartMonth() < o2.getStartMonth())
+        {
+            return -1;
+        }
+        if (o1.getDay() > o2.getDay())
+        {
+            return 1;
+        }
+        if (o1.getDay() < o2.getDay())
+        {
+            return -1;
+        }
+        if (o1.getStartHour() > o2.getStartHour())
+        {
+            return 1;
+        }
+        if (o1.getStartHour() < o2.getStartHour())
+        {
+            return -1;
+        }
+        return 0;
 	}
 }
