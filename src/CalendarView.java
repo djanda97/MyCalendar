@@ -9,6 +9,7 @@ public class CalendarView extends JFrame
 
     public CalendarView()
     {
+        DataModel model = new DataModel();
         JFrame frame = new JFrame();
         frame.setTitle("Calendar");
         frame.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -19,7 +20,8 @@ public class CalendarView extends JFrame
         LeftTopBarPanel leftTopBarPanel = new LeftTopBarPanel();
 
         // L-2 left bottom calendar panel
-        MonthPanel calendarPanel = new MonthPanel();
+        MonthPanel calendarPanel = new MonthPanel(model);
+        //calendarPanel.setLayout(new FlowLayout());
 
         // define left side panel
         JPanel leftPanel = new JPanel();
