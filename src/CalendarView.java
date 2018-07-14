@@ -4,8 +4,8 @@ import java.awt.*;
 public class CalendarView extends JFrame
 {
     //private DataModel model;
-    private static final int DEFAULT_WIDTH = 1200;
-    private static final int DEFAULT_HEIGHT = 600;
+    private static final int DEFAULT_WIDTH = 800;
+    private static final int DEFAULT_HEIGHT = 400;
 
     public CalendarView()
     {
@@ -17,17 +17,25 @@ public class CalendarView extends JFrame
         // --  there are totally two panels, left calendar panel and right panel with eventPanel and topBarPanel
 
         // L-1 left top calendar panel
-        LeftTopBarPanel leftTopBarPanel = new LeftTopBarPanel();
+        LeftTopBarPanel leftTopBarPanel = new LeftTopBarPanel(model);
+
+        CalendarInfoPanel calendarInfoPanel = new CalendarInfoPanel(model);
 
         // L-2 left bottom calendar panel
-        MonthPanel calendarPanel = new MonthPanel(model);
-        //calendarPanel.setLayout(new FlowLayout());
+        MonthPanel monthPanel = new MonthPanel(model);
+        //monthPanel.setLayout(new FlowLayout());
 
         // define left side panel
         JPanel leftPanel = new JPanel();
-        leftPanel.setLayout(new BorderLayout());
-        leftPanel.add(leftTopBarPanel, BorderLayout.NORTH);
-        leftPanel.add(calendarPanel, BorderLayout.CENTER);
+        //leftPanel.setPreferredSize(new Dimension(500, 400));
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.PAGE_AXIS));
+        leftPanel.add(leftTopBarPanel);
+        leftPanel.add(calendarInfoPanel);
+        leftPanel.add(monthPanel);
+//        leftPanel.setLayout(new BorderLayout());
+//        leftPanel.add(leftTopBarPanel, BorderLayout.NORTH);
+//        leftPanel.add(calendarInfoPanel, BorderLayout.CENTER);
+//        leftPanel.add(monthPanel, BorderLayout.SOUTH);
 
         // R-1 right top bar panel
         RightTopBarPanel rightTopBarPanel = new RightTopBarPanel();
@@ -42,7 +50,7 @@ public class CalendarView extends JFrame
         rightPanel.add(eventPanel, BorderLayout.CENTER); // is able to add after rightpanel is defined.
 
         frame.add(leftPanel, BorderLayout.WEST);
-        frame.add(rightPanel, BorderLayout.EAST);
+        frame.add(rightPanel, BorderLayout.CENTER);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
