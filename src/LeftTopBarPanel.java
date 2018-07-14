@@ -34,7 +34,7 @@ public class LeftTopBarPanel extends CalendarInfoPanel {
 
         buttonNext.addActionListener(event -> {
             int nextMonth = model.getCurrentMonth() + 1;
-
+            calendarInfoPanel.textArea.setText(String.valueOf(months[nextMonth]));
         });
     }
 }

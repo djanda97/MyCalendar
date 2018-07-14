@@ -29,7 +29,7 @@ public class CalendarView extends JFrame
         JPanel leftPanel = new JPanel();
         //leftPanel.setPreferredSize(new Dimension(500, 400));
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.PAGE_AXIS));
-        leftPanel.add(leftTopBarPanel);
+        //leftPanel.add(leftTopBarPanel);
         leftPanel.add(calendarInfoPanel);
         leftPanel.add(monthPanel);
 //        leftPanel.setLayout(new BorderLayout());
@@ -41,16 +41,20 @@ public class CalendarView extends JFrame
         RightTopBarPanel rightTopBarPanel = new RightTopBarPanel();
 
         // R-2 right bottom event panel -- name can be changed by Viet
-        EventPanel eventPanel = new EventPanel();
+        //EventPanel eventPanel = new EventPanel();
 
+        DayView dayView = new DayView(model);
         // define right side panel
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BorderLayout());
         rightPanel.add(rightTopBarPanel, BorderLayout.NORTH);
-        rightPanel.add(eventPanel, BorderLayout.CENTER); // is able to add after rightpanel is defined.
+        //rightPanel.add(eventPanel, BorderLayout.CENTER); // is able to add after rightpanel is defined.
+        rightPanel.add(dayView, BorderLayout.CENTER);
+
 
         frame.add(leftPanel, BorderLayout.WEST);
         frame.add(rightPanel, BorderLayout.CENTER);
+        //frame.add(dayView, BorderLayout.EAST);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }

@@ -1,8 +1,10 @@
 import javax.swing.*;
+import java.awt.*;
+import java.util.Calendar;
 
 public class CalendarInfoPanel extends JPanel
 {
-    private DataModel model = new DataModel();
+    private DataModel model;
     protected JTextArea textArea;
     private String month;
     private String year;
@@ -13,16 +15,42 @@ public class CalendarInfoPanel extends JPanel
 
     public  CalendarInfoPanel() { }
 
-    public CalendarInfoPanel(DataModel model)
+    public CalendarInfoPanel(DataModel m)
     {
         //createPanel("prev");
-        //DataModel model = m;
-
+        model = m;
+        //setLayout(new GridLayout());
         String[] months = { "January", "February", "March", "April", "May", "June",
                 "July", "August", "September", "October", "November", "December" };
         String[] days = { "Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat" };
 
         textArea = new JTextArea();
+
+        JButton buttonToday = new JButton("Today");
+        JButton buttonPrev = new JButton("<");
+        JButton buttonNext = new JButton(">");
+
+        add(buttonToday);
+        add(buttonPrev);
+        add(buttonNext);
+
+        buttonToday.addActionListener(event -> {
+            // call get day method
+            // model.goto method.
+        });
+
+        buttonPrev.addActionListener(event -> {
+            model.getCal().add(Calendar.MONTH, -1);
+            int prevMonth = model.getCurrentMonth();
+            textArea.setText(String.valueOf(months[prevMonth]));
+        });
+
+        buttonNext.addActionListener(event -> {
+            model.getCal().add(Calendar.MONTH, 1);
+            int nextMonth = model.getCurrentMonth();
+            textArea.setText(String.valueOf(months[nextMonth]));
+        });
+
         String month = months[model.getCurrentMonth()] + " ";
         textArea.setText(month);
 
