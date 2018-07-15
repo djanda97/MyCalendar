@@ -16,32 +16,20 @@ public class CalendarView extends JFrame
 
         // --  there are totally two panels, left calendar panel and right panel with eventPanel and topBarPanel
 
-        // L-1 left top calendar panel
-//        LeftTopBarPanel leftTopBarPanel = new LeftTopBarPanel(model);
 
         CalendarInfoPanel calendarInfoPanel = new CalendarInfoPanel(model);
 
-        // L-2 left bottom calendar panel
-        MonthPanel monthPanel = new MonthPanel(model);
-        //monthPanel.setLayout(new FlowLayout());
+        // left calendar panel
+//        MonthPanel monthPanel = new MonthPanel(model);
 
         // define left side panel
         JPanel leftPanel = new JPanel();
-        //leftPanel.setPreferredSize(new Dimension(500, 400));
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.PAGE_AXIS));
-//        leftPanel.add(leftTopBarPanel);
         leftPanel.add(calendarInfoPanel);
-        leftPanel.add(monthPanel);
-//        leftPanel.setLayout(new BorderLayout());
-//        leftPanel.add(leftTopBarPanel, BorderLayout.NORTH);
-//        leftPanel.add(calendarInfoPanel, BorderLayout.CENTER);
-//        leftPanel.add(monthPanel, BorderLayout.SOUTH);
+//        leftPanel.add(monthPanel);
 
         // R-1 right top bar panel
         RightTopBarPanel rightTopBarPanel = new RightTopBarPanel();
-
-        // R-2 right bottom event panel -- name can be changed by Viet
-        //EventPanel eventPanel = new EventPanel();
 
         DayView dayView = new DayView(model);
         // define right side panel

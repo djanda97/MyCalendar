@@ -3,6 +3,11 @@ import javax.swing.event.ChangeListener;
 import java.io.*;
 import java.util.*;
 
+// function needed
+// go to method
+//
+
+
 public class DataModel {
     private List<Event> eventList;
     private BufferedReader br;
@@ -30,16 +35,6 @@ public class DataModel {
 
     public void setEventList(List<Event> eventList) {
         this.eventList = eventList;
-    }
-
-    public boolean createEvent(String name, int year, int startMonth,
-                               int day, int startHour, int endHour) {
-        Event e = new Event(name, year, startMonth, day, startHour, endHour);
-        if(checkConflict(e)) {
-            eventList.add(e);
-            return true;
-        }
-        return false;
     }
 
     public boolean createEvent(String name, int year, int startMonth, int endMonth,

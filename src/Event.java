@@ -4,11 +4,11 @@ public class Event{
 	private int startMonth;
 	private int endMonth;
 	private int day;
-	private int startHour;
-	private int endHour;
+	private double startHour;
+	private double endHour;
 	
 	public Event(String name, int year, int startMonth,
-			int day, int startHour, int endHour) {
+			int day, double startHour, double endHour) {
 		super();
 		this.name = name;
 		this.year = year;
@@ -19,7 +19,7 @@ public class Event{
 		this.endHour = endHour;
 	}
 	public Event(String name, int year, int startMonth, int endMonth,
-			int day, int startHour, int endHour) {
+			int day, double startHour, double endHour) {
 		super();
 		this.name = name;
 		this.year = year;
@@ -59,13 +59,13 @@ public class Event{
 	public void setDay(int day) {
 		this.day = day;
 	}
-	public int getStartHour() {
+	public double getStartHour() {
 		return startHour;
 	}
 	public void setStartHour(int startHour) {
 		this.startHour = startHour;
 	}
-	public int getEndHour() {
+	public double getEndHour() {
 		return endHour;
 	}
 	public void setEndHour(int endHour) {

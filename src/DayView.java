@@ -1,10 +1,12 @@
-import java.awt.*;
-import java.awt.geom.*;
 import javax.swing.*;
-import javax.swing.event.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 
 public class DayView extends JPanel implements ChangeListener{
-    
+
     private static final int rows = 23;
     private static final int column = 1;
     private static String[][] events;
@@ -73,11 +75,11 @@ public class DayView extends JPanel implements ChangeListener{
         JTextArea area = new JTextArea();
         area.append("\n");
         for(int i = 1; i < 13; ++i){
-            String s = " " + i + "am \n\n"; 
+            String s = " " + i + "am \n\n";
             area.append(s);
         }
         for(int i = 1; i < 12; ++i){
-            String s = " " + i + "pm \n\n"; 
+            String s = " " + i + "pm \n\n";
             area.append(s);
         }
         return area;
