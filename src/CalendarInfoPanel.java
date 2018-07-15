@@ -13,27 +13,15 @@ public class CalendarInfoPanel extends JPanel
                 "July", "August", "September", "October", "November", "December" };
     protected String[] days = { "Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat" };
 
-    public  CalendarInfoPanel() { }
-
     public CalendarInfoPanel(DataModel m)
     {
         model = m;
         setLayout(new BorderLayout());
-        String[] months = { "January", "February", "March", "April", "May", "June",
-                "July", "August", "September", "October", "November", "December" };
-        String[] days = { "Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat" };
-
-        textArea = new JTextArea();
 
         JButton buttonToday = new JButton("Today");
         JButton buttonPrevDay = new JButton("<");
         JButton buttonNextDay = new JButton(">");
         JButton buttonCreate = new JButton("CREATE");
-
-//        add(buttonToday);
-//        add(buttonPrev);
-//        add(buttonNext);
-//        add(buttonCreate);
 
         buttonCreate.setBackground(Color.orange);
         buttonCreate.setOpaque(true);
@@ -45,15 +33,53 @@ public class CalendarInfoPanel extends JPanel
         panel1.add(buttonNextDay);
         panel1.add(buttonCreate);
 
+        textArea = new JTextArea();
+        String month = months[model.getCurrentMonth()] + " ";
+        textArea.setText(month);
+        textArea.append(String.valueOf(model.getCurrentYear()) + "\n\n");
+        String spaces = " ";
+        for (int i = 0; i < NUM_SPACES; i++) { spaces = spaces.concat(" "); }
+        for (String s: days) { textArea.append(s + spaces); }
+        textArea.setOpaque(false);
+
+        JButton buttonPrevMonth = new JButton("<");
+        JButton buttonNextMonth = new JButton(">");
+
+        JPanel panel4 = new JPanel();
+        panel4.add(textArea);
+        panel4.add(buttonPrevMonth);
+        panel4.add(buttonNextMonth);
+
         JPanel panel3 = new JPanel();
         panel3.setLayout(new BorderLayout());
         panel3.add(panel1, BorderLayout.NORTH);
+        panel3.add(panel4, BorderLayout.CENTER);
+
+        JPanel panel5 = new JPanel();
+        panel5.setLayout(new GridLayout(6, 7));
+
+        this.add(panel3, BorderLayout.NORTH);
+        this.add(panel5, BorderLayout.CENTER);
+
+        for (int i = 1; i < model.getMonthDays() + 1; i++)
+        {
+            JButton dayButton = new JButton(String.valueOf(i));
+            dayButton.setPreferredSize(new Dimension(50, 50));
+            panel5.add(dayButton);
+
+            if ( i == model.getCurrentDay()){
+                dayButton.setBackground(Color.PINK);
+                dayButton.setOpaque(true);
+                dayButton.setBorderPainted(false);
+
+            }
+            dayButton.addActionListener(event ->{
+                // first function, shows the events on that day on DayView panel, go to method
 
 
+            });
 
-
-
-
+        }
 
         buttonToday.addActionListener(event -> {
             // call get day method
@@ -126,19 +152,19 @@ public class CalendarInfoPanel extends JPanel
 
             }
 
-            int day = 0;
-            int month = 0;
-            int year = 0;
+            int theDay = 0;
+            int theMonth = 0;
+            int theYear = 0;
 
             // for date, 2. if the user enter the date, then parse the date into day, month, and year.
             if (!date.equals("")) {
 
-                day = Integer.parseInt(date.substring(0, 2));
-                month = Integer.parseInt(date.substring(3, 5));
-                year = Integer.parseInt(date.substring(6));
+                theDay = Integer.parseInt(date.substring(0, 2));
+                theMonth = Integer.parseInt(date.substring(3, 5));
+                theYear = Integer.parseInt(date.substring(6));
 
-                System.out.println(day);
-                System.out.println(month);
+                System.out.println(theDay);
+                System.out.println(theMonth);
                 System.out.println(year);
             }
 
@@ -151,34 +177,9 @@ public class CalendarInfoPanel extends JPanel
 
 
 //             now controller, update the DataModel's data.
-            model.createEvent(eventTitle, year, month, month, day, startingHour, endingHour);
+            model.createEvent(eventTitle, theYear, theMonth, theMonth, theDay, startingHour, endingHour);
 
         });
-
-
-        String month = months[model.getCurrentMonth()] + " ";
-        textArea.setText(month);
-
-        textArea.append(String.valueOf(model.getCurrentYear()) + "\n\n");
-
-        String spaces = " ";
-        for (int i = 0; i < NUM_SPACES; i++) { spaces = spaces.concat(" "); }
-
-        for (String s: days) { textArea.append(s + spaces); }
-
-        textArea.setOpaque(false);
-
-        JButton buttonPrevMonth = new JButton("<");
-        JButton buttonNextMonth = new JButton(">");
-
-        JPanel panel4 = new JPanel();
-        panel4.add(textArea);
-        panel4.add(buttonPrevMonth);
-        panel4.add(buttonNextMonth);
-
-        panel3.add(panel4, BorderLayout.SOUTH);
-
-        this.add(panel3, BorderLayout.NORTH);
 
         buttonPrevMonth.addActionListener(event -> {
             model.getCal().add(Calendar.MONTH, -1);
@@ -197,40 +198,6 @@ public class CalendarInfoPanel extends JPanel
             textArea.append(String.valueOf(model.getCurrentYear()) + "\n\n");
 
         });
-
-
-        JPanel panel5 = new JPanel();
-        panel5.setLayout(new GridLayout(6, 7));
-
-        for (int i = 1; i < model.getMonthDays() + 1; i++)
-        {
-            JButton dayButton = new JButton(String.valueOf(i));
-            dayButton.setPreferredSize(new Dimension(50, 50));
-            panel5.add(dayButton);
-
-            if ( i == model.getCurrentDay()){
-                dayButton.setBackground(Color.PINK);
-                dayButton.setOpaque(true);
-                dayButton.setBorderPainted(false);
-
-            }
-            dayButton.addActionListener(event ->{
-                // first function, shows the events on that day on DayView panel, go to method
-
-
-
-
-
-            });
-
-        }
-        this.add(panel5, BorderLayout.CENTER);
-
-
-
-
-
-
 
     }
 

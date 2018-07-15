@@ -4,7 +4,7 @@ import java.awt.*;
 public class CalendarView extends JFrame
 {
     //private DataModel model;
-    private static final int DEFAULT_WIDTH = 800;
+    private static final int DEFAULT_WIDTH = 1000;
     private static final int DEFAULT_HEIGHT = 400;
 
     public CalendarView()
@@ -40,8 +40,8 @@ public class CalendarView extends JFrame
         rightPanel.add(dayView, BorderLayout.CENTER);
 
 
-        frame.add(leftPanel, BorderLayout.WEST);
-        frame.add(rightPanel, BorderLayout.CENTER);
+        frame.add(leftPanel, BorderLayout.CENTER);
+        frame.add(rightPanel, BorderLayout.EAST);
         //frame.add(dayView, BorderLayout.EAST);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
