@@ -1,11 +1,14 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class RightTopBarPanel extends JPanel {
+public class RightTopBarPanel extends JPanel
+{
     private DataModel model;
 
-    public RightTopBarPanel()//DataModel m)
+    public RightTopBarPanel(DataModel m)
     {
+        model = m;
+
         setLayout(new GridLayout(1, 5));
         setSize(50, 10);
 
@@ -21,24 +24,29 @@ public class RightTopBarPanel extends JPanel {
         add(buttonAgenda);
         add(buttonFromFile);
 
-        buttonDay.addActionListener(event -> {
+        buttonDay.addActionListener(event ->
+        {
             // call get day method
             // model.goto method.
         });
 
-        buttonWeek.addActionListener(event -> {
+        buttonWeek.addActionListener(event ->
+        {
 
         });
 
-        buttonMonth.addActionListener(event -> {
+        buttonMonth.addActionListener(event ->
+        {
 
         });
 
-        buttonAgenda.addActionListener(event -> {
+        buttonAgenda.addActionListener(event ->
+        {
 
         });
 
-        buttonFromFile.addActionListener(event -> {
+        buttonFromFile.addActionListener(event ->
+        {
 
         });
     }

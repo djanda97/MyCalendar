@@ -1,4 +1,3 @@
-
 /**
  * HW1-Solution
  * <p>
@@ -20,13 +19,14 @@ import java.util.Scanner;
  */
 public class MyCalendarTester
 {
-    private static Scanner option;
     static Scanner eventOption = new Scanner(System.in);
     static ArrayList<Event> events = new ArrayList<Event>();
+    private static Scanner option;
 
     /**
      * The main method where we get calendar option to display in the console
      * We take user inputs
+     *
      * @param args
      */
     public static void main(String[] args)
@@ -103,7 +103,7 @@ public class MyCalendarTester
 //					System.out.println("Invalid Input!");
 //					break;
 //			}
-		}
+    }
 //
 //    }
 //

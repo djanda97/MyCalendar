@@ -3,7 +3,6 @@ import java.awt.*;
 
 public class CalendarView extends JFrame
 {
-    //private DataModel model;
     private static final int DEFAULT_WIDTH = 1000;
     private static final int DEFAULT_HEIGHT = 400;
 
@@ -17,21 +16,21 @@ public class CalendarView extends JFrame
         // --  there are totally two panels, left calendar panel and right panel with eventPanel and topBarPanel
 
 
-        CalendarInfoPanel calendarInfoPanel = new CalendarInfoPanel(model);
-
-        // left calendar panel
-//        MonthPanel monthPanel = new MonthPanel(model);
+        CalendarInfoView calendarInfoView = new CalendarInfoView(model);
+        model.attach(calendarInfoView);
 
         // define left side panel
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.PAGE_AXIS));
-        leftPanel.add(calendarInfoPanel);
+        leftPanel.add(calendarInfoView);
 //        leftPanel.add(monthPanel);
 
         // R-1 right top bar panel
-        RightTopBarPanel rightTopBarPanel = new RightTopBarPanel();
+        RightTopBarPanel rightTopBarPanel = new RightTopBarPanel(model);
 
         DayView dayView = new DayView(model);
+        model.attach(dayView);
+
         // define right side panel
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BorderLayout());
