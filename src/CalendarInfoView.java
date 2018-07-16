@@ -89,11 +89,11 @@ public class CalendarInfoView extends JPanel implements ChangeListener
                 model.printEventList();
                 // first function, shows the events on that day on DayView panel, go to method
             });
-
         }
 
         buttonToday.addActionListener(event ->
         {
+            model.getCal().set(Calendar.DATE, today);
             for (int i = 1; i < model.getMonthDays() + 1; i++)
             {
                 if (i == today)
