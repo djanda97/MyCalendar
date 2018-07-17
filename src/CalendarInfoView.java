@@ -231,18 +231,10 @@ public class CalendarInfoView extends JPanel implements ChangeListener
         if (option.equalsIgnoreCase("prev"))
         {
             model.getCal().add(Calendar.DATE, -1);
-//            int prevDay = model.getCurrentDay();
-//            dayButton[prevDay].setBackground(Color.GRAY);
-//            dayButton[prevDay].setOpaque(true);
-//            dayButton[prevDay].setBorderPainted(true);
         }
         else if (option.equalsIgnoreCase("next"))
         {
             model.getCal().add(Calendar.DATE, 1);
-//            int nextDay = model.getCurrentDay();
-//            dayButton[nextDay].setBackground(Color.GRAY);
-//            dayButton[nextDay].setOpaque(true);
-//            dayButton[nextDay].setBorderPainted(true);
         }
 
         int day = model.getCurrentDay();
@@ -256,18 +248,10 @@ public class CalendarInfoView extends JPanel implements ChangeListener
         if (option.equalsIgnoreCase("prev"))
         {
             model.getCal().add(Calendar.MONTH, -1);
-//            int prevMonth = model.getCurrentMonth();
-//            textArea.setText(String.valueOf(months[prevMonth]) + " ");
-//            textArea.append(String.valueOf(model.getCurrentYear()) + "\n\n");
-//            printDaysOfWeek();
         }
         else if (option.equalsIgnoreCase("next"))
         {
             model.getCal().add(Calendar.MONTH, 1);
-//            int nextMonth = model.getCurrentMonth();
-//            textArea.setText(String.valueOf(months[nextMonth]) + " ");
-//            textArea.append(String.valueOf(model.getCurrentYear()) + "\n\n");
-//            printDaysOfWeek();
         }
 
         int month = model.getCurrentMonth();

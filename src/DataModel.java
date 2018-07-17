@@ -107,8 +107,43 @@ public class DataModel
 
     public void sortEvent()
     {
-        EventComparator eventComparator = new EventComparator();
-        Collections.sort(eventList, eventComparator);
+        Comparator<Event> eventComparator = (e1, e2) ->
+        {
+            if (e1.getYear() > e2.getYear())
+            {
+                return 1;
+            }
+            if (e1.getYear() < e2.getYear())
+            {
+                return -1;
+            }
+            if (e1.getStartMonth() > e2.getStartMonth())
+            {
+                return 1;
+            }
+            if (e1.getStartMonth() < e2.getStartMonth())
+            {
+                return -1;
+            }
+            if (e1.getDay() > e2.getDay())
+            {
+                return 1;
+            }
+            if (e1.getDay() < e2.getDay())
+            {
+                return -1;
+            }
+            if (e1.getStartHour() > e2.getStartHour())
+            {
+                return 1;
+            }
+            if (e1.getStartHour() < e2.getStartHour())
+            {
+                return -1;
+            }
+            return 0;
+        };
+        eventList.sort(eventComparator);
     }
 
     public boolean readFromFile(String filePath)
