@@ -38,7 +38,6 @@ public class CalendarView extends JFrame
         //rightPanel.add(eventPanel, BorderLayout.CENTER); // is able to add after rightpanel is defined.
         rightPanel.add(dayView, BorderLayout.CENTER);
 
-
         frame.add(leftPanel, BorderLayout.CENTER);
         frame.add(rightPanel, BorderLayout.EAST);
         //frame.add(dayView, BorderLayout.EAST);

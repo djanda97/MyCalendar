@@ -20,6 +20,30 @@ public class DayView extends JPanel implements ChangeListener
     {
         model = dataModel;
         events = new String[rows][column];
+
+        // ***********************************************************
+        // The following code makes the initial screen has the DayView
+        // code copied from paintComponent method.
+//        super.paintComponent(g);
+        setLayout(new BorderLayout());
+//        Graphics2D g2 = (Graphics2D) g;
+        JScrollPane scrollPane = new JScrollPane();
+        dateLabel = new JLabel("Monday 3/31");
+
+        JPanel fullPanel = new JPanel(new BorderLayout());
+        eventTable = createEventTable();
+        JPanel timePanel = new JPanel();
+        timePanel.add(timeTextArea());
+        fullPanel.add(timePanel, BorderLayout.WEST);
+        fullPanel.add(verticalSeparator());
+        fullPanel.add(eventTable, BorderLayout.CENTER);
+
+        scrollPane.setViewportView(fullPanel);
+        add(dateLabel, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
+//        drawSeperator(g2);
+        // ***********************************************************
+
     }
 
     private static JTable createEventTable()

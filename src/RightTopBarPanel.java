@@ -9,6 +9,7 @@ public class RightTopBarPanel extends JPanel
     {
         model = m;
 
+
         setLayout(new GridLayout(1, 5));
         setSize(50, 10);
 
@@ -47,7 +48,11 @@ public class RightTopBarPanel extends JPanel
 
         buttonFromFile.addActionListener(event ->
         {
+            // this filePath location should change to your own file location to test it out.
+            String filePath = "/Users/sijiagao/IdeaProjects/Group Calendar/src/input.txt";
+            model.readFromFile(filePath);
 
+            // then should show the event being created in the TextArea
         });
     }
 }

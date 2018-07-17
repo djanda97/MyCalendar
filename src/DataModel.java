@@ -1,3 +1,4 @@
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.io.*;
@@ -10,6 +11,34 @@ public class DataModel
     private Map<Integer, String> dayMap;
     private ArrayList<ChangeListener> listeners;
     private GregorianCalendar cal;
+
+    private int eventDay;
+    private int eventMonth;
+    private int eventYear;
+
+    public void setEventDay(int eventDay){
+        this.eventDay = eventDay;
+    }
+
+    public void setEventMonth(int eventMonth){
+        this.eventMonth = eventMonth;
+    }
+
+    public void setEventYear(int eventYear){
+        this.eventYear = eventYear;
+    }
+
+    public int getEventDay(){
+        return this.eventDay;
+    }
+
+    public int getEventMonth(){
+        return this.eventMonth;
+    }
+
+    public int getEventYear(){
+        return this.eventYear;
+    }
 
     public DataModel()
     {
@@ -36,17 +65,17 @@ public class DataModel
         this.eventList = eventList;
     }
 
-    public boolean createEvent(String name, int year, int startMonth,
-                               int day, int startHour, int endHour)
-    {
-        Event e = new Event(name, year, startMonth, day, startHour, endHour);
-        if (checkConflict(e))
-        {
-            eventList.add(e);
-            return true;
-        }
-        return false;
-    }
+//    public boolean createEvent(String name, int year, int startMonth,
+//                               int day, int startHour, int endHour)
+//    {
+//        Event e = new Event(name, year, startMonth, day, startHour, endHour);
+//        if (checkConflict(e))
+//        {
+//            eventList.add(e);
+//            return true;
+//        }
+//        return false;
+//    }
 
     public boolean createEvent(String name, int year, int startMonth, int endMonth,
                                int day, int startHour, int endHour)
@@ -84,7 +113,6 @@ public class DataModel
 
     public boolean readFromFile(String filePath)
     {
-        filePath = "/Users/arnabsarkar/Desktop/input.txt";
         File file = new File(filePath);
 
         try
@@ -94,6 +122,7 @@ public class DataModel
             while ((st = br.readLine()) != null)
             {
                 String[] stSplit = st.split(";");
+                // event is made by seven components
                 if (stSplit.length != 7)
                 {
                     return false;
@@ -105,6 +134,7 @@ public class DataModel
                 String days = stSplit[4];
                 int startHour = Integer.parseInt(stSplit[5]);
                 int endHour = Integer.parseInt(stSplit[6]);
+
                 GregorianCalendar g = new GregorianCalendar(year, (startMonth - 1), 1);
                 while ((g.get(Calendar.MONTH) + 1) <= endMonth && g.get(Calendar.YEAR) == year)
                 {
