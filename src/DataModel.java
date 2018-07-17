@@ -1,4 +1,3 @@
-import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.io.*;
@@ -15,6 +14,11 @@ public class DataModel
     private int eventDay;
     private int eventMonth;
     private int eventYear;
+
+    public int getToday()
+    {
+        return Calendar.getInstance().get(Calendar.DATE);
+    }
 
     public void setEventDay(int eventDay){
         this.eventDay = eventDay;
@@ -242,5 +246,4 @@ public class DataModel
     {
         listeners.add(listener);
     }
-
 }
