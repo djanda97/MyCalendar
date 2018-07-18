@@ -1,5 +1,6 @@
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
 import java.io.*;
 import java.util.*;
 
@@ -10,6 +11,7 @@ public class DataModel
     private Map<Integer, String> dayMap;
     private ArrayList<ChangeListener> listeners;
     private GregorianCalendar cal;
+    
 
     private int eventDay;
     private int eventMonth;
@@ -68,19 +70,34 @@ public class DataModel
     {
         this.eventList = eventList;
     }
+    
+    // Overloaded function to create single event without endHour
+    public boolean createEvent(String name, int year, int startMonth,
+			int day, int startHour) {
+		Event e = new Event(name, year, startMonth, day, startHour);
+		if(checkConflict(e)) {
+			eventList.add(e);
+			update();
+			return true;
+		}
+		return false;
+	}
 
-//    public boolean createEvent(String name, int year, int startMonth,
-//                               int day, int startHour, int endHour)
-//    {
-//        Event e = new Event(name, year, startMonth, day, startHour, endHour);
-//        if (checkConflict(e))
-//        {
-//            eventList.add(e);
-//            return true;
-//        }
-//        return false;
-//    }
+    // Overloaded function to create single event with endHour
+    public boolean createEvent(String name, int year, int startMonth,
+                               int day, int startHour, int endHour)
+    {
+        Event e = new Event(name, year, startMonth, day, startHour, endHour);
+        if (checkConflict(e))
+        {
+            eventList.add(e);
+            update();
+            return true;
+        }
+        return false;
+    }
 
+    // Overloaded function to create recurring event
     public boolean createEvent(String name, int year, int startMonth, int endMonth,
                                int day, int startHour, int endHour)
     {
@@ -88,6 +105,7 @@ public class DataModel
         if (checkConflict(e))
         {
             eventList.add(e);
+            update();
             return true;
         }
         return false;
@@ -111,47 +129,48 @@ public class DataModel
 
     public void sortEvent()
     {
-        Comparator<Event> eventComparator = (e1, e2) ->
+	Comparator<Event> eventComparator = (e1, e2) ->
+    {
+        if (e1.getYear() > e2.getYear())
         {
-            if (e1.getYear() > e2.getYear())
-            {
-                return 1;
-            }
-            if (e1.getYear() < e2.getYear())
-            {
-                return -1;
-            }
-            if (e1.getStartMonth() > e2.getStartMonth())
-            {
-                return 1;
-            }
-            if (e1.getStartMonth() < e2.getStartMonth())
-            {
-                return -1;
-            }
-            if (e1.getDay() > e2.getDay())
-            {
-                return 1;
-            }
-            if (e1.getDay() < e2.getDay())
-            {
-                return -1;
-            }
-            if (e1.getStartHour() > e2.getStartHour())
-            {
-                return 1;
-            }
-            if (e1.getStartHour() < e2.getStartHour())
-            {
-                return -1;
-            }
-            return 0;
-        };
-        eventList.sort(eventComparator);
-    }
+            return 1;
+         }
+         if (e1.getYear() < e2.getYear())
+         {
+             return -1;
+         }
+         if (e1.getStartMonth() > e2.getStartMonth())
+         {
+             return 1;
+         }
+         if (e1.getStartMonth() < e2.getStartMonth())
+         {
+             return -1;
+         }
+         if (e1.getDay() > e2.getDay())
+         {
+             return 1;
+         }
+         if (e1.getDay() < e2.getDay())
+         {
+             return -1;
+         }
+         if (e1.getStartHour() > e2.getStartHour())
+         {
+             return 1;
+         }
+         if (e1.getStartHour() < e2.getStartHour())
+         {
+             return -1;
+         }
+         return 0;
+     };
+     eventList.sort(eventComparator);
+  }
 
     public boolean readFromFile(String filePath)
     {
+        filePath = "/Users/arnabsarkar/Desktop/input.txt";
         File file = new File(filePath);
 
         try
@@ -161,7 +180,6 @@ public class DataModel
             while ((st = br.readLine()) != null)
             {
                 String[] stSplit = st.split(";");
-                // event is made by seven components
                 if (stSplit.length != 7)
                 {
                     return false;
@@ -173,7 +191,6 @@ public class DataModel
                 String days = stSplit[4];
                 int startHour = Integer.parseInt(stSplit[5]);
                 int endHour = Integer.parseInt(stSplit[6]);
-
                 GregorianCalendar g = new GregorianCalendar(year, (startMonth - 1), 1);
                 while ((g.get(Calendar.MONTH) + 1) <= endMonth && g.get(Calendar.YEAR) == year)
                 {
@@ -196,7 +213,7 @@ public class DataModel
         }
         return true;
     }
-
+    
     public void printEventList()
     {
         for (Event e : eventList)
@@ -229,15 +246,33 @@ public class DataModel
     {
         return cal.get(Calendar.DATE);
     }
+    
+    public void nextDay() {
+    	cal.add(Calendar.DATE, 1);
+    	update();
+    }
+    
+    public void nextMonth() {
+    	cal.add(Calendar.MONTH, 1);
+    	update();
+    }
+    
+    public void prevDay() {
+    	cal.add(Calendar.DATE, -1);
+    	update();
+    }
+    
+    public void prevMonth() {
+    	cal.add(Calendar.MONTH, -1);
+    	update();
+    }
 
     // Mutator
-    public void update(Event event)
+    public void update()
     {
-        eventList.add(event);
-        ChangeEvent e = new ChangeEvent(this);
         for (ChangeListener l : listeners)
         {
-            l.stateChanged(e);
+            l.stateChanged(new ChangeEvent(this));
         }
     }
 
@@ -245,5 +280,62 @@ public class DataModel
     public void attach(ChangeListener listener)
     {
         listeners.add(listener);
+    }
+
+    // Override function to get all the events in the given viewType
+    // only for day, week and month
+    public List<Event> getEventInSelectedView(String viewType) {
+    	sortEvent();
+    	List<Event> eventListInSelectedView = new ArrayList<Event>();
+    	if("day".equalsIgnoreCase(viewType)) {
+	    	for(Event e: eventList) {
+	    		if(e.getYear() == getCurrentYear()
+	    				&& e.getStartMonth() == (getCurrentMonth() + 1)
+	    				&& e.getDay() == getCurrentDay()) {
+	    			eventListInSelectedView.add(e);
+	    		}
+	    	}
+    	} else if("month".equalsIgnoreCase(viewType)) {
+    		for(Event e: eventList) {
+	    		if(e.getYear() == getCurrentYear()
+	    				&& e.getStartMonth() == (getCurrentMonth() + 1)) {
+	    			eventListInSelectedView.add(e);
+	    		}
+	    	}
+    	} else if("week".equalsIgnoreCase(viewType)) {
+    		int weekLowerThreshold = getCal().get(Calendar.DAY_OF_WEEK) - 1;
+    		int weekUpperThreshold = 7 - getCal().get(Calendar.DAY_OF_WEEK);
+    		//System.out.println(weekLowerThreshold + " " + getCal().get(Calendar.DAY_OF_WEEK) + " " + weekUpperThreshold);
+    		for(Event e: eventList) {
+    			GregorianCalendar eventCal = new GregorianCalendar(e.getYear(), (e.getStartMonth() - 1), e.getDay());
+    			double diff = (1.0 * getCal().getTimeInMillis() - eventCal.getTimeInMillis()) / (1000 * 60 * 60 * 24);
+    			//System.out.println(getCal().getTimeInMillis() + " " +  eventCal.getTimeInMillis());
+    			//System.out.println(diff + " " + (diff < 0 && Math.abs(diff) < weekLowerThreshold) + " " + (diff >=0 && diff <= weekUpperThreshold));
+    			if(diff < 0 && Math.abs(diff) < weekUpperThreshold) {
+    				eventListInSelectedView.add(e);
+    			} else if(diff > 0 && diff <= weekLowerThreshold) {
+    				eventListInSelectedView.add(e);
+    			} else if (diff == 0) {
+    				eventListInSelectedView.add(e);
+    			}
+	    	}
+    	}
+    	return eventListInSelectedView;
+    }
+    
+    // Override function to get all the events in the given date range
+    // For Agenda view type
+    public List<Event> getEventInSelectedView(int startYear, int startMonth, int startDay,
+    		int endYear, int endMonth, int endDay) {
+    	sortEvent();
+    	List<Event> eventListInSelectedView = new ArrayList<Event>();
+    	for(Event e: eventList) {
+    		if(e.getYear() >= startYear && e.getYear() <= endYear
+    				&& e.getStartMonth() >= startMonth && e.getStartMonth() <= endMonth
+    				&& e.getDay() >= startDay && e.getDay() <= endDay) {
+    			eventListInSelectedView.add(e);
+    		}
+    	}
+    	return eventListInSelectedView;
     }
 }
