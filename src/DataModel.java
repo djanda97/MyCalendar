@@ -1,6 +1,5 @@
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
 import java.io.*;
 import java.util.*;
 
@@ -174,8 +173,18 @@ public class DataModel
     // *********read from file function*********
     public boolean readFromFile(String filePath)
     {
-        filePath = "/Users/arnabsarkar/Desktop/input.txt";
+        //filePath = "input.txt";
         File file = new File(filePath);
+        try
+        {
+            if (file.createNewFile())
+            {
+                System.out.println("input.txt does not exist since this is the first run of the program. Creating now.");
+            }
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
 
         try
         {

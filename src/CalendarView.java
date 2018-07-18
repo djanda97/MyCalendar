@@ -1,9 +1,7 @@
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -115,6 +113,29 @@ public class CalendarView extends JFrame implements ChangeListener
         {
             JTextField textFieldEventTitle = new JTextField("Untitled Event", TEXT_COLUMN);
             JTextField textFieldDate = new JTextField(7);
+            String currentMonth;
+            String currentDay;
+
+            if ((model.getCurrentMonth() + 1) < 10)
+            {
+                currentMonth = "0" + String.valueOf(model.getCurrentMonth() + 1);
+            }
+            else
+            {
+                currentMonth = String.valueOf(model.getCurrentMonth() + 1);
+            }
+
+            if (model.getCurrentDay() < 10)
+            {
+                currentDay = "0" + String.valueOf(model.getCurrentDay());
+            }
+            else
+            {
+                currentDay = String.valueOf(model.getCurrentDay());
+            }
+
+            String currentDate = currentMonth + "/" + currentDay + "/" + model.getCurrentYear();
+            textFieldDate.setText(currentDate);
             JTextField textFieldStartingTime = new JTextField(5);
             JTextField textFieldEndingTime = new JTextField(5);
 
@@ -138,53 +159,56 @@ public class CalendarView extends JFrame implements ChangeListener
             myPanel.add(myPanel1, BorderLayout.NORTH);
             myPanel.add(myPanel2, BorderLayout.SOUTH);
 
-            JOptionPane.showConfirmDialog(null, myPanel,
+            int input = JOptionPane.showConfirmDialog(null, myPanel,
                     "Please enter event title, date, starting time and ending time \n", JOptionPane.OK_CANCEL_OPTION);
 
-            String eventTitle = textFieldEventTitle.getText();
-            String date = textFieldDate.getText();            // specially, if the user did not enter anything, it means current button's date
-            String startingTime = textFieldStartingTime.getText();
-            String endingTime = textFieldEndingTime.getText();
-
-
-            // for date, 1. if the user didn't enter anything, get the current button's date.
-            if (date.equals(""))
+            if (input != JOptionPane.CLOSED_OPTION)
             {
-                // this need to go to the for loop when generate the days.
-                // *************************************************************************
-                // this needs to get the current day's date from the current button's date.
-                System.out.println("no date");
+                String eventTitle = textFieldEventTitle.getText();
+                String date = textFieldDate.getText();            // specially, if the user did not enter anything, it means current button's date
+                String startingTime = textFieldStartingTime.getText();
+                String endingTime = textFieldEndingTime.getText();
 
-            }
 
-            int theDay = 0;
-            int theMonth = 0;
-            int theYear = 0;
+                // for date, 1. if the user didn't enter anything, get the current button's date.
+                if (date.equals(""))
+                {
+                    // this need to go to the for loop when generate the days.
+                    // *************************************************************************
+                    // this needs to get the current day's date from the current button's date.
+                    System.out.println("no date");
 
-            // for date, 2. if the user enter the date, then parse the date into day, month, and year.
-            if (!date.equals(""))
-            {
-                theDay = Integer.parseInt(date.substring(0, 2));
-                theMonth = Integer.parseInt(date.substring(3, 5));
-                theYear = Integer.parseInt(date.substring(6));
+                }
 
-                System.out.println(theDay);
-                System.out.println(theMonth);
-                System.out.println(theYear);
-            }
+                int theDay = 0;
+                int theMonth = 0;
+                int theYear = 0;
 
-            if (startingTime.equals("") || endingTime.equals(""))
-            {
-                System.out.println("no events created");
-            }
-            else
-            {
-                int startingHour = Integer.parseInt(startingTime.substring(0, 2));
-                int endingHour = Integer.parseInt(endingTime.substring(0, 2));
-                System.out.println(startingHour);
-                System.out.println(endingHour);
-                // ******************************************* Controller **********************************
-                model.createEvent(eventTitle, theYear, theMonth, theMonth, theDay, startingHour, endingHour);
+                // for date, 2. if the user enter the date, then parse the date into day, month, and year.
+                if (!date.equals(""))
+                {
+                    theDay = Integer.parseInt(date.substring(0, 2));
+                    theMonth = Integer.parseInt(date.substring(3, 5));
+                    theYear = Integer.parseInt(date.substring(6));
+
+                    System.out.println(theDay);
+                    System.out.println(theMonth);
+                    System.out.println(theYear);
+                }
+
+                if (startingTime.equals("") || endingTime.equals(""))
+                {
+                    System.out.println("no events created");
+                }
+                else
+                {
+                    int startingHour = Integer.parseInt(startingTime.substring(0, 2));
+                    int endingHour = Integer.parseInt(endingTime.substring(0, 2));
+                    System.out.println(startingHour);
+                    System.out.println(endingHour);
+                    // ******************************************* Controller **********************************
+                    model.createEvent(eventTitle, theYear, theMonth, theMonth, theDay, startingHour, endingHour);
+                }
             }
         });
 
@@ -274,9 +298,10 @@ public class CalendarView extends JFrame implements ChangeListener
     private void createRightPanel()
     {
         JPanel rightPanel = new JPanel();
-//        rightPanel.setSize(400, 400);
-//        rightPanel.setLayout(new FlowLayout());
-        rightPanel.setPreferredSize(new Dimension(400, 400));
+        rightPanel.setLayout(new BorderLayout());
+
+        JPanel rightButtonPanel = new JPanel();
+        rightButtonPanel.setLayout(new FlowLayout());
 
         JButton buttonDay = new JButton("Day");
         JButton buttonWeek = new JButton("Week");
@@ -284,11 +309,13 @@ public class CalendarView extends JFrame implements ChangeListener
         JButton buttonAgenda = new JButton("Agenda");
         JButton buttonFromFile = new JButton("From File");
 
-        rightPanel.add(buttonDay);
-        rightPanel.add(buttonWeek);
-        rightPanel.add(buttonMonth);
-        rightPanel.add(buttonAgenda);
-        rightPanel.add(buttonFromFile);
+        rightButtonPanel.add(buttonDay);
+        rightButtonPanel.add(buttonWeek);
+        rightButtonPanel.add(buttonMonth);
+        rightButtonPanel.add(buttonAgenda);
+        rightButtonPanel.add(buttonFromFile);
+
+        rightPanel.add(rightButtonPanel, BorderLayout.NORTH);
 
         buttonDay.addActionListener(event ->
         {
@@ -401,14 +428,17 @@ public class CalendarView extends JFrame implements ChangeListener
 
         buttonFromFile.addActionListener(event ->
         {
-        	model.readFromFile("/Users/arnabsarkar/Desktop/input.txt");
+            //model.readFromFile("/Users/arnabsarkar/Desktop/input.txt");
+            model.readFromFile("input.txt");
         	model.printEventList();
         });
-        
-        rightPanel.add(new DayView(model));
+
+        rightPanel.add(new DayView(model), BorderLayout.CENTER);
         this.add(rightPanel, BorderLayout.CENTER);
     }
 
-    public void stateChanged(ChangeEvent e) {
+    public void stateChanged(ChangeEvent e)
+    {
+
     }
 }
