@@ -7,7 +7,22 @@ public class Event
     private int day;
     private double startHour;
     private double endHour;
+    
+    // Constructor for single event wihtout endHour
+    public Event(String name, int year, int startMonth,
+            int day, double startHour)
+	{
+	   super();
+	   this.name = name;
+	   this.year = year;
+	   this.startMonth = startMonth;
+	   this.endMonth = -1;
+	   this.day = day;
+	   this.startHour = startHour;
+	   this.endHour = 23;
+	}
 
+    // Constructor for single event with endHour
     public Event(String name, int year, int startMonth,
                  int day, double startHour, double endHour)
     {
@@ -21,6 +36,7 @@ public class Event
         this.endHour = endHour;
     }
 
+    // Constructor for recurring event
     public Event(String name, int year, int startMonth, int endMonth,
                  int day, double startHour, double endHour)
     {
@@ -111,5 +127,9 @@ public class Event
     {
         this.endHour = endHour;
     }
+    
+    public String toString() {
+		return name + " " + year + " " + startMonth + " " + endMonth + " " + 
+				day + " " + startHour + " " + endHour;
+	}
 }
-
