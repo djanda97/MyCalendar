@@ -6,9 +6,9 @@ import java.util.*;
 
 public class DataModel
 {
-    private List<Event> eventList;
+    private List<Event> eventList;// *****to store events******
     private BufferedReader br;
-    private Map<Integer, String> dayMap;
+    private Map<Integer, String> dayMap;//******to map recurring events*******
     private ArrayList<ChangeListener> listeners;
     private GregorianCalendar cal;
     
@@ -51,6 +51,10 @@ public class DataModel
         listeners = new ArrayList<>();
         cal = new GregorianCalendar();
         eventList = new ArrayList<>();
+        // *************creating Map to act as a dictionary so that when we read the 
+        // day from the file, we can map it back to cal.get(Calendar.DAY_OF_WEEK)
+        // this is only for recurring events because we are reading from file for recurring events only. 
+        // In recurring events each symbol is used to map the day to a event.***************
         dayMap = new HashMap<>();
         dayMap.put(1, "S");
         dayMap.put(2, "M");
@@ -71,7 +75,7 @@ public class DataModel
         this.eventList = eventList;
     }
     
-    // Overloaded function to create single event without endHour
+    // *********Overloaded function to create single event without endHour*********
     public boolean createEvent(String name, int year, int startMonth,
 			int day, int startHour) {
 		Event e = new Event(name, year, startMonth, day, startHour);
@@ -83,7 +87,7 @@ public class DataModel
 		return false;
 	}
 
-    // Overloaded function to create single event with endHour
+    //*********** Overloaded function to create single event with endHour**********
     public boolean createEvent(String name, int year, int startMonth,
                                int day, int startHour, int endHour)
     {
@@ -97,7 +101,7 @@ public class DataModel
         return false;
     }
 
-    // Overloaded function to create recurring event
+    //********** Overloaded function to create recurring event***************
     public boolean createEvent(String name, int year, int startMonth, int endMonth,
                                int day, int startHour, int endHour)
     {
@@ -167,7 +171,7 @@ public class DataModel
      };
      eventList.sort(eventComparator);
   }
-
+    // *********read from file function*********
     public boolean readFromFile(String filePath)
     {
         filePath = "/Users/arnabsarkar/Desktop/input.txt";
@@ -282,20 +286,21 @@ public class DataModel
         listeners.add(listener);
     }
 
-    // Override function to get all the events in the given viewType
-    // only for day, week and month
+    // ************Override function to get all the events in the given viewType
+    // only for day, week and month***************
     public List<Event> getEventInSelectedView(String viewType) {
     	sortEvent();
     	List<Event> eventListInSelectedView = new ArrayList<Event>();
-
+    	// checks if view type is day
     	if("day".equalsIgnoreCase(viewType)) {
 	    	for(Event e: eventList) {
 	    		if(e.getYear() == getCurrentYear()
 	    				&& e.getStartMonth() == (getCurrentMonth() + 1)
 	    				&& e.getDay() == getCurrentDay()) {
-	    			eventListInSelectedView.add(e);
+	    			eventListInSelectedView.add(e);// adds event in the viewtype
 	    		}
 	    	}
+	    	//checks if viewtype is month
     	} else if("month".equalsIgnoreCase(viewType)) {
     		for(Event e: eventList) {
 	    		if(e.getYear() == getCurrentYear()
@@ -303,12 +308,14 @@ public class DataModel
 	    			eventListInSelectedView.add(e);
 	    		}
 	    	}
+    		//checks if the viewtype is week view
     	} else if("week".equalsIgnoreCase(viewType)) {
-    		int weekLowerThreshold = getCal().get(Calendar.DAY_OF_WEEK) - 1;
-    		int weekUpperThreshold = 7 - getCal().get(Calendar.DAY_OF_WEEK);
+    		int weekLowerThreshold = getCal().get(Calendar.DAY_OF_WEEK) - 1;//****** the first day of the week******
+    		int weekUpperThreshold = 7 - getCal().get(Calendar.DAY_OF_WEEK);//****** the last day of the week*******
     		//System.out.println(weekLowerThreshold + " " + getCal().get(Calendar.DAY_OF_WEEK) + " " + weekUpperThreshold);
     		for(Event e: eventList) {
     			GregorianCalendar eventCal = new GregorianCalendar(e.getYear(), (e.getStartMonth() - 1), e.getDay());
+    			// the time difference
     			double diff = (1.0 * getCal().getTimeInMillis() - eventCal.getTimeInMillis()) / (1000 * 60 * 60 * 24);
     			//System.out.println(getCal().getTimeInMillis() + " " +  eventCal.getTimeInMillis());
     			//System.out.println(diff + " " + (diff < 0 && Math.abs(diff) < weekLowerThreshold) + " " + (diff >=0 && diff <= weekUpperThreshold));
