@@ -1,8 +1,10 @@
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
 import java.awt.*;
 import java.util.Calendar;
+import java.util.List;
 
 public class CalendarView extends JFrame implements ChangeListener
 {
@@ -11,6 +13,7 @@ public class CalendarView extends JFrame implements ChangeListener
     private final static int DAYS_IN_WEEK = 7;
     private final static int TEXT_COLUMN = 55;
     private DataModel model;
+    private List<Event> eventList;
     private JTextArea textArea;
     private JButton[] dayButton;
     private String[] months = {"January", "February", "March", "April", "May", "June",
@@ -39,11 +42,11 @@ public class CalendarView extends JFrame implements ChangeListener
 
         if (option.equalsIgnoreCase("prev"))
         {
-            model.getCal().add(Calendar.DATE, -1);
+        	model.prevDay();
         }
         else if (option.equalsIgnoreCase("next"))
         {
-            model.getCal().add(Calendar.DATE, 1);
+        	model.nextDay();
         }
 
         int day = model.getCurrentDay();
@@ -56,11 +59,11 @@ public class CalendarView extends JFrame implements ChangeListener
     {
         if (option.equalsIgnoreCase("prev"))
         {
-            model.getCal().add(Calendar.MONTH, -1);
+        	model.prevMonth();
         }
         else if (option.equalsIgnoreCase("next"))
         {
-            model.getCal().add(Calendar.MONTH, 1);
+        	model.nextMonth();
         }
 
         int month = model.getCurrentMonth();
@@ -280,21 +283,27 @@ public class CalendarView extends JFrame implements ChangeListener
         rightPanel.add(buttonMonth);
         rightPanel.add(buttonAgenda);
         rightPanel.add(buttonFromFile);
+        
+        
 
         buttonDay.addActionListener(event ->
         {
             // call get day method
             // model.goto method.
+        	eventList = model.getEventInSelectedView("day");
+        	System.out.println(eventList.toString());
         });
 
         buttonWeek.addActionListener(event ->
         {
-
+        	eventList = model.getEventInSelectedView("week");
+        	System.out.println(eventList.toString());
         });
 
         buttonMonth.addActionListener(event ->
         {
-
+        	eventList = model.getEventInSelectedView("month");
+        	System.out.println(eventList.toString());
         });
 
         buttonAgenda.addActionListener(event ->
@@ -304,13 +313,10 @@ public class CalendarView extends JFrame implements ChangeListener
 
         buttonFromFile.addActionListener(event ->
         {
-            // this filePath location should change to your own file location to test it out.
-            //String filePath = "/Users/sijiagao/IdeaProjects/Group Calendar/src/input.txt";
-            //model.readFromFile(filePath);
-
-            // then should show the event being created in the TextArea
+        	model.readFromFile("/Users/arnabsarkar/Desktop/input.txt");
+        	model.printEventList();
         });
-
+        
         rightPanel.add(new DayView(model));
         this.add(rightPanel, BorderLayout.CENTER);
     }
