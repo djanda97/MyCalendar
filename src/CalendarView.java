@@ -428,8 +428,28 @@ public class CalendarView extends JFrame implements ChangeListener
 
         buttonFromFile.addActionListener(event ->
         {
-            //model.readFromFile("/Users/arnabsarkar/Desktop/input.txt");
-            model.readFromFile("input.txt");
+        	JTextField textFieldFilePath = new JTextField( 25);
+
+            JPanel myPanel = new JPanel();
+            
+            // ask user input
+            myPanel.add(new JLabel("File path:"));
+            myPanel.add(textFieldFilePath);
+            myPanel.add(Box.createHorizontalStrut(50));
+
+            JOptionPane.showConfirmDialog(null, myPanel,
+                "Please enter file path to read from \n", JOptionPane.OK_CANCEL_OPTION);
+
+            String filePath = textFieldFilePath.getText();
+        	//model.readFromFile("/Users/arnabsarkar/Desktop/input.txt");
+            
+            if(!model.readFromFile(filePath)) {
+            	JOptionPane.showMessageDialog(null, "Error reading file",
+            			"File Read Info", JOptionPane.WARNING_MESSAGE);
+            } else {
+            	JOptionPane.showMessageDialog(null, "Done reading from file",
+            			"File Read Info", JOptionPane.INFORMATION_MESSAGE);
+            }
         	model.printEventList();
         });
 
