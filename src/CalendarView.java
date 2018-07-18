@@ -3,12 +3,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 public class CalendarView extends JFrame implements ChangeListener
 {
-    private static final int DEFAULT_WIDTH = 800;
+    private static final int DEFAULT_WIDTH = 900;
     private static final int DEFAULT_HEIGHT = 400;
     private final static int DAYS_IN_WEEK = 7;
     private final static int TEXT_COLUMN = 55;
@@ -22,6 +23,7 @@ public class CalendarView extends JFrame implements ChangeListener
 
     public CalendarView(DataModel m)
     {
+//        eventList = new ArrayList<>();
         this.model = m;
         this.setTitle("Calendar");
         this.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -136,13 +138,14 @@ public class CalendarView extends JFrame implements ChangeListener
             myPanel.add(myPanel1, BorderLayout.NORTH);
             myPanel.add(myPanel2, BorderLayout.SOUTH);
 
-            int result = JOptionPane.showConfirmDialog(null, myPanel,
+            JOptionPane.showConfirmDialog(null, myPanel,
                     "Please enter event title, date, starting time and ending time \n", JOptionPane.OK_CANCEL_OPTION);
 
             String eventTitle = textFieldEventTitle.getText();
             String date = textFieldDate.getText();            // specially, if the user did not enter anything, it means current button's date
             String startingTime = textFieldStartingTime.getText();
             String endingTime = textFieldEndingTime.getText();
+
 
             // for date, 1. if the user didn't enter anything, get the current button's date.
             if (date.equals(""))
@@ -190,6 +193,7 @@ public class CalendarView extends JFrame implements ChangeListener
         leftButtonPanel.add(buttonNextDay);
         leftButtonPanel.add(buttonCreate);
 
+        // month and year: July 2018
         JPanel textPanel = new JPanel();
         textPanel.setLayout(new FlowLayout());
         textArea = new JTextArea();
@@ -240,7 +244,7 @@ public class CalendarView extends JFrame implements ChangeListener
             {
                 dayButton[i].setBackground(Color.PINK);
                 dayButton[i].setOpaque(true);
-                dayButton[i].setBorderPainted(false);
+                dayButton[i].setBorderPainted(true);
             }
 
             dayButton[i].addActionListener(event ->
@@ -270,7 +274,9 @@ public class CalendarView extends JFrame implements ChangeListener
     private void createRightPanel()
     {
         JPanel rightPanel = new JPanel();
-        rightPanel.setLayout(new FlowLayout());
+//        rightPanel.setSize(400, 400);
+//        rightPanel.setLayout(new FlowLayout());
+        rightPanel.setPreferredSize(new Dimension(400, 400));
 
         JButton buttonDay = new JButton("Day");
         JButton buttonWeek = new JButton("Week");
@@ -283,8 +289,6 @@ public class CalendarView extends JFrame implements ChangeListener
         rightPanel.add(buttonMonth);
         rightPanel.add(buttonAgenda);
         rightPanel.add(buttonFromFile);
-        
-        
 
         buttonDay.addActionListener(event ->
         {
@@ -308,6 +312,90 @@ public class CalendarView extends JFrame implements ChangeListener
 
         buttonAgenda.addActionListener(event ->
         {
+            JTextField textFieldStartingDate = new JTextField( 10);
+            JTextField textFieldEndingDate = new JTextField( 10);
+
+            JPanel myPanel = new JPanel();
+
+            // ask user input
+            myPanel.add(new JLabel("Starting date: (DD/MM/YYYY)"));
+            myPanel.add(textFieldStartingDate);
+            myPanel.add(Box.createVerticalStrut(15));
+            myPanel.add(new JLabel("Ending date: (DD/MM/YYYY)"));
+            myPanel.add(textFieldEndingDate);
+
+            JOptionPane.showConfirmDialog(null, myPanel,
+                "Please enter event title, date, starting time and ending time \n", JOptionPane.OK_CANCEL_OPTION);
+
+            String startingDate = textFieldStartingDate.getText();
+            String endingDate = textFieldEndingDate.getText();
+
+            // if 1. if the user didn't enter anything, do not do anything
+            if (startingDate.equals("") || endingDate.equals(""))
+            {
+                System.out.println("no time period entered");
+            }
+
+            int startingDay = 0;
+            int startingMonth = 0;
+            int startingYear = 0;
+
+            int endingDay = 0;
+            int endingMonth = 0;
+            int endingYear = 0;
+
+            // if 2. if the user enter the date, then parse the date into day, month, and year.
+            if (!((startingDate.equals("") || endingDate.equals(""))))
+            {
+                startingDay = Integer.parseInt(startingDate.substring(0, 2));
+                startingMonth = Integer.parseInt(startingDate.substring(3, 5));
+                startingYear = Integer.parseInt(startingDate.substring(6));
+
+                endingDay = Integer.parseInt(endingDate.substring(0, 2));
+                endingMonth = Integer.parseInt(endingDate.substring(3, 5));
+                endingYear = Integer.parseInt(endingDate.substring(6));
+
+                System.out.println(startingDay);
+                System.out.println(startingMonth);
+                System.out.println(startingYear);
+
+                System.out.println(endingDay);
+                System.out.println(endingMonth);
+                System.out.println(endingYear);
+            }
+
+            // situation 0:
+            // if same month, loop through each day.
+            if (startingMonth == endingMonth){
+                for (int i = startingDay; i < endingDay + 1; i++){
+                    String day = String.valueOf(i);
+                    eventList = model.getEventInSelectedView(day);
+
+                    //*********************************************************************
+//                    model.getEventInSelectedView(day);
+                    // this return a list,
+                    // but I wanna call getEventDay() method to get the details of the event
+                    //*********************************************************************
+
+
+                }
+                System.out.println(eventList.toString());
+
+                // ?????????????????????????????????????? current code the event title and time are missing
+            }
+
+            // situation 1:
+            // if different months, 1/12 - 2/12 get the starting day to the end of the starting month, loop through each day,
+            // get the ending day to the end of the ending month, loop through each day.
+
+            // situation 2:
+            // if different months, 1/12 - 5/12 but with other whole months inside, in addition to situation 1,
+            // loop through the months in between
+
+            // situation 3:
+            // if different years, look through the month -- same with situation 2.
+
+
 
         });
 
@@ -321,8 +409,6 @@ public class CalendarView extends JFrame implements ChangeListener
         this.add(rightPanel, BorderLayout.CENTER);
     }
 
-    public void stateChanged(ChangeEvent e)
-    {
-
+    public void stateChanged(ChangeEvent e) {
     }
 }

@@ -34,6 +34,14 @@ public class Event
         this.endHour = endHour;
     }
 
+    public Event(String name, int year, int startMonth,
+                 int day, int startHour)
+    {
+        super();
+        Event e = new Event(name, year, startMonth, day, startHour);
+
+    }
+
     public String getName()
     {
         return name;

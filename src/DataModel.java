@@ -287,6 +287,7 @@ public class DataModel
     public List<Event> getEventInSelectedView(String viewType) {
     	sortEvent();
     	List<Event> eventListInSelectedView = new ArrayList<Event>();
+
     	if("day".equalsIgnoreCase(viewType)) {
 	    	for(Event e: eventList) {
 	    		if(e.getYear() == getCurrentYear()
