@@ -177,17 +177,6 @@ public class DataModel
         File file = new File(filePath);
         try
         {
-            if (file.createNewFile())
-            {
-                System.out.println("input.txt does not exist since this is the first run of the program. Creating now.");
-            }
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-        try
-        {
             br = new BufferedReader(new FileReader(file));
             String st;
             while ((st = br.readLine()) != null)
@@ -217,11 +206,11 @@ public class DataModel
             }
         } catch (FileNotFoundException e)
         {
-            e.printStackTrace();
+            //e.printStackTrace();
             return false;
         } catch (IOException e)
         {
-            e.printStackTrace();
+            //e.printStackTrace();
             return false;
         }
         return true;
