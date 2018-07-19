@@ -129,7 +129,7 @@ public class DataModel
                     			&& event.getStartHour() < e.getEndHour())
                     // scenario 3 - when the new event completely over the existing events time
                     	|| (event.getStartHour() >= e.getStartHour()
-                    			&& event.getStartHour() <= e.getEndHour())
+                    			&& event.getStartHour() < e.getEndHour())
                     	)
                     )
             {
