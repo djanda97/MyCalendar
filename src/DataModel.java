@@ -121,8 +121,17 @@ public class DataModel
             if (event.getYear() == e.getYear()
                     && event.getStartMonth() == e.getStartMonth()
                     && event.getDay() == e.getDay()
-                    && event.getStartHour() >= e.getStartHour()
-                    && (event.getEndHour() < e.getStartHour() || event.getEndHour() != -1))
+                    // scenario 1 - when the new events startHour is conflicting 
+                    && ((event.getStartHour() <= e.getStartHour()
+                    		&& event.getEndHour() > e.getStartHour())
+                    // scenario 2 - when the new events endHour is conflicting
+                    	|| (event.getStartHour() > e.getStartHour()
+                    			&& event.getStartHour() < e.getEndHour())
+                    // scenario 3 - when the new event completely over the existing events time
+                    	|| (event.getStartHour() >= e.getStartHour()
+                    			&& event.getStartHour() <= e.getEndHour())
+                    	)
+                    )
             {
                 return false;
             }
