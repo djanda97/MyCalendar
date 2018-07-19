@@ -187,8 +187,8 @@ public class CalendarView extends JFrame implements ChangeListener
                 // for date, 2. if the user enter the date, then parse the date into day, month, and year.
                 if (!date.equals(""))
                 {
-                    theDay = Integer.parseInt(date.substring(0, 2));
-                    theMonth = Integer.parseInt(date.substring(3, 5));
+                	theMonth = Integer.parseInt(date.substring(0, 2));
+                	theDay = Integer.parseInt(date.substring(3, 5));
                     theYear = Integer.parseInt(date.substring(6));
 
                     System.out.println(theDay);
@@ -202,12 +202,18 @@ public class CalendarView extends JFrame implements ChangeListener
                 }
                 else
                 {
-                    int startingHour = Integer.parseInt(startingTime.substring(0, 2));
-                    int endingHour = Integer.parseInt(endingTime.substring(0, 2));
+                    int startingHour = Integer.parseInt(startingTime);
+                    int endingHour = Integer.parseInt(endingTime);
                     System.out.println(startingHour);
                     System.out.println(endingHour);
                     // ******************************************* Controller **********************************
-                    model.createEvent(eventTitle, theYear, theMonth, theMonth, theDay, startingHour, endingHour);
+                    if(!model.createEvent(eventTitle, theYear, theMonth, theDay, startingHour, endingHour)) {
+                    	JOptionPane.showMessageDialog(null, "Conflicting event found! Event not created. Please try again with a different time.",
+                    			"Event Info", JOptionPane.WARNING_MESSAGE);
+                    } else {
+                    	JOptionPane.showMessageDialog(null, "Event created.",
+                    			"Event Info", JOptionPane.INFORMATION_MESSAGE);
+                    }
                 }
             }
         });
@@ -389,27 +395,14 @@ public class CalendarView extends JFrame implements ChangeListener
                 System.out.println(endingDay);
                 System.out.println(endingMonth);
                 System.out.println(endingYear);
-            }
+            }            
+            eventList = model.getEventInSelectedView(startingYear, startingMonth, startingDay,
+            		endingYear, endingMonth, endingDay);
 
-            // situation 0:
-            // if same month, loop through each day.
-            if (startingMonth == endingMonth){
-                for (int i = startingDay; i < endingDay + 1; i++){
-                    String day = String.valueOf(i);
-                    eventList = model.getEventInSelectedView(day);
-
-                    //*********************************************************************
-//                    model.getEventInSelectedView(day);
-                    // this return a list,
-                    // but I wanna call getEventDay() method to get the details of the event
-                    //*********************************************************************
-
-
-                }
-                System.out.println(eventList.toString());
+            System.out.println(eventList.toString());
 
                 // ?????????????????????????????????????? current code the event title and time are missing
-            }
+            
 
             // situation 1:
             // if different months, 1/12 - 2/12 get the starting day to the end of the starting month, loop through each day,
