@@ -338,8 +338,17 @@ public class DataModel
     	return eventListInSelectedView;
     }
     
-    // Override function to get all the events in the given date range
-    // For Agenda view type
+    /**
+     *  Override function to get all the events in the given date range
+     *  For Agenda view type
+     * @param startYear
+     * @param startMonth
+     * @param startDay
+     * @param endYear
+     * @param endMonth
+     * @param endDay
+     * @return list of events which fall under the Agenda start and end date
+     */
     public List<Event> getEventInSelectedView(int startYear, int startMonth, int startDay,
     		int endYear, int endMonth, int endDay) {
     	sortEvent();
