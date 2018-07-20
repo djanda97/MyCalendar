@@ -19,6 +19,12 @@ public class CalendarView extends JFrame implements ChangeListener
             "July", "August", "September", "October", "November", "December"};
     private String[] days = {"Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"};
 
+    // after click on nextDay or prevDay or nextMonth or preMonth,
+    // to get the clicked day, month, year;
+    private int changedToDay;
+    private int changedToMonth;
+    private int changedToYear;
+
     public CalendarView(DataModel m)
     {
 //        eventList = new ArrayList<>();
@@ -30,7 +36,13 @@ public class CalendarView extends JFrame implements ChangeListener
         this.createRightPanel();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
+        changedToDay = model.getCurrentDay();
+        changedToMonth = model.getCurrentMonth();
+        changedToYear = model.getCurrentYear();
+
     }
+
+
 
     private void changeDay(String option)
     {
@@ -53,6 +65,13 @@ public class CalendarView extends JFrame implements ChangeListener
         dayButton[day].setBackground(Color.GRAY);
         dayButton[day].setOpaque(true);
         dayButton[day].setBorderPainted(true);
+
+        changedToDay = day;
+//        System.out.println("changedToDay is " + changedToDay);
+
+        DayView dayView = new DayView(changedToDay, changedToMonth, changedToYear);
+        dayView.PrintChangedDate();
+
     }
 
     private void changeMonth(String option)
@@ -69,7 +88,30 @@ public class CalendarView extends JFrame implements ChangeListener
         int month = model.getCurrentMonth();
         textArea.setText(String.valueOf(months[month]) + " ");
         textArea.append(String.valueOf(model.getCurrentYear()) + "\n\n");
+
+        changedToMonth = month;
+        changedToYear = model.getCurrentYear();
+
+        String stringMonth = String.valueOf(changedToMonth);
+        String stringDay = String.valueOf(changedToDay);
+        String stringYear = String.valueOf(changedToYear);
+
+        String stringDate = "changedToMonth: " + changedToMonth + "changedToDay: " + changedToDay + "changedToYear: " + changedToYear;
+        String[] stringDates = new String[1];
+        stringDates[0] = stringDate;
+
+        DayView dayView = new DayView(changedToDay, changedToMonth, changedToYear);
+        dayView.PrintChangedDate();
+
+        // works
+//        System.out.println("changedToMonth: " + changedToMonth);
+//        System.out.println("changedToMonth: " + changedToYear);
     }
+
+//    public void callDayView(){
+//        DayView dayView = new DayView(changedToDay, changedToMonth, changedToYear);
+//        dayView.PrintChangedDate();
+//    }
 
     private void createLeftPanel()
     {
@@ -169,15 +211,8 @@ public class CalendarView extends JFrame implements ChangeListener
                 String startingTime = textFieldStartingTime.getText();
                 String endingTime = textFieldEndingTime.getText();
 
-
-                // for date, 1. if the user didn't enter anything, get the current button's date.
-                if (date.equals(""))
-                {
-                    // this need to go to the for loop when generate the days.
-                    // *************************************************************************
-                    // this needs to get the current day's date from the current button's date.
+                if (date.equals("")) {
                     System.out.println("no date");
-
                 }
 
                 int theDay = 0;
@@ -185,27 +220,24 @@ public class CalendarView extends JFrame implements ChangeListener
                 int theYear = 0;
 
                 // for date, 2. if the user enter the date, then parse the date into day, month, and year.
-                if (!date.equals(""))
-                {
+                if (!date.equals("")) {
                 	theMonth = Integer.parseInt(date.substring(0, 2));
                 	theDay = Integer.parseInt(date.substring(3, 5));
                     theYear = Integer.parseInt(date.substring(6));
 
-                    System.out.println(theDay);
-                    System.out.println(theMonth);
-                    System.out.println(theYear);
+                    System.out.println("an event was created");
+                    System.out.println("the date is " + date);
                 }
 
-                if (startingTime.equals("") || endingTime.equals(""))
-                {
+                if (startingTime.equals("") || endingTime.equals("")) {
                     System.out.println("no events created");
                 }
                 else
                 {
                     int startingHour = Integer.parseInt(startingTime);
                     int endingHour = Integer.parseInt(endingTime);
-                    System.out.println(startingHour);
-                    System.out.println(endingHour);
+                    System.out.println("startingHour is " + startingTime);
+                    System.out.println("endingHour is " + endingTime);
                     // ******************************************* Controller **********************************
                     if(!model.createEvent(eventTitle, theYear, theMonth, theDay, startingHour, endingHour)) {
                     	JOptionPane.showMessageDialog(null, "Conflicting event found! Event not created. Please try again with a different time.",
@@ -223,7 +255,7 @@ public class CalendarView extends JFrame implements ChangeListener
         leftButtonPanel.add(buttonNextDay);
         leftButtonPanel.add(buttonCreate);
 
-        // month and year: July 2018
+        // the following codes are for month and year
         JPanel textPanel = new JPanel();
         textPanel.setLayout(new FlowLayout());
         textArea = new JTextArea();
@@ -255,6 +287,7 @@ public class CalendarView extends JFrame implements ChangeListener
         daysPanel.setLayout(new GridLayout(5, DAYS_IN_WEEK));
         dayButton = new JButton[model.getMonthDays() + 1];
 
+        final int dayClicked;
         for (int i = 1; i < model.getMonthDays() + 1; i++)
         {
             if (i == 1)
@@ -277,19 +310,26 @@ public class CalendarView extends JFrame implements ChangeListener
                 dayButton[i].setBorderPainted(true);
             }
 
-            dayButton[i].addActionListener(event ->
-            {
-                model.printEventList();
+//            dayButton[i].addActionListener(event ->
+//            {
+////                model.printEventList();
+////                dayClicked = String.valueOf(i);
+////                String day = String.valueOf(i);
+//
+//
+//
+////                eventList = model.getEventInSelectedView(day);
+////                System.out.println(eventList.toString());
+////                rightPanel.addAct
+////                model.getEventInSelectedView(changedToYear, changedToMonth, i,changedToYear,changedToMonth,i);
+//            });
 
-                // update the event day, month, year for eventPanel to use.
 
-                // ****************************************************************
-                // wanted to get the data so that can save it to dataModel and change on EventPanel.
-                // but it is final, cannot do that
-//                int clickedDay = i;
 
-                //  shows the events on that day on DayView panel, go to method
-            });
+
+
+
+
         }
 
         leftPanel.add(leftButtonPanel);
@@ -303,6 +343,8 @@ public class CalendarView extends JFrame implements ChangeListener
 
     private void createRightPanel()
     {
+        DayView dayView = new DayView(model);
+
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BorderLayout());
 
@@ -329,6 +371,9 @@ public class CalendarView extends JFrame implements ChangeListener
             // model.goto method.
         	eventList = model.getEventInSelectedView("day");
         	System.out.println(eventList.toString());
+
+
+
         });
 
         buttonWeek.addActionListener(event ->
@@ -351,10 +396,10 @@ public class CalendarView extends JFrame implements ChangeListener
             JPanel myPanel = new JPanel();
 
             // ask user input
-            myPanel.add(new JLabel("Starting date: (DD/MM/YYYY)"));
+            myPanel.add(new JLabel("Starting date: (MM/DD/YYYY)"));
             myPanel.add(textFieldStartingDate);
             myPanel.add(Box.createVerticalStrut(15));
-            myPanel.add(new JLabel("Ending date: (DD/MM/YYYY)"));
+            myPanel.add(new JLabel("Ending date: (MM/DD/YYYY)"));
             myPanel.add(textFieldEndingDate);
 
             JOptionPane.showConfirmDialog(null, myPanel,
@@ -380,41 +425,22 @@ public class CalendarView extends JFrame implements ChangeListener
             // if 2. if the user enter the date, then parse the date into day, month, and year.
             if (!((startingDate.equals("") || endingDate.equals(""))))
             {
-                startingDay = Integer.parseInt(startingDate.substring(0, 2));
-                startingMonth = Integer.parseInt(startingDate.substring(3, 5));
+                startingDay = Integer.parseInt(startingDate.substring(3, 5));
+                startingMonth = Integer.parseInt(startingDate.substring(0, 2));
                 startingYear = Integer.parseInt(startingDate.substring(6));
 
-                endingDay = Integer.parseInt(endingDate.substring(0, 2));
-                endingMonth = Integer.parseInt(endingDate.substring(3, 5));
+                endingDay = Integer.parseInt(endingDate.substring(3, 5));
+                endingMonth = Integer.parseInt(endingDate.substring(0, 2));
                 endingYear = Integer.parseInt(endingDate.substring(6));
 
-                System.out.println(startingDay);
-                System.out.println(startingMonth);
-                System.out.println(startingYear);
+                System.out.println("starting date is " + startingDate);
+                System.out.println("ending date is " + endingDate);
 
-                System.out.println(endingDay);
-                System.out.println(endingMonth);
-                System.out.println(endingYear);
             }            
             eventList = model.getEventInSelectedView(startingYear, startingMonth, startingDay,
             		endingYear, endingMonth, endingDay);
 
             System.out.println(eventList.toString());
-
-                // ?????????????????????????????????????? current code the event title and time are missing
-            
-
-            // situation 1:
-            // if different months, 1/12 - 2/12 get the starting day to the end of the starting month, loop through each day,
-            // get the ending day to the end of the ending month, loop through each day.
-
-            // situation 2:
-            // if different months, 1/12 - 5/12 but with other whole months inside, in addition to situation 1,
-            // loop through the months in between
-
-            // situation 3:
-            // if different years, look through the month -- same with situation 2.
-
 
 
         });
@@ -446,7 +472,13 @@ public class CalendarView extends JFrame implements ChangeListener
         	model.printEventList();
         });
 
-        rightPanel.add(new DayView(model), BorderLayout.CENTER);
+
+
+
+
+//        rightPanel.add(new DayView(model), BorderLayout.CENTER);
+        rightPanel.add(dayView, BorderLayout.CENTER);
+
         this.add(rightPanel, BorderLayout.CENTER);
     }
 

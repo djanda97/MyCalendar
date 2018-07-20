@@ -14,7 +14,37 @@ public class DayView extends JPanel implements ChangeListener
     private static DataModel model;
     private static JLabel dateLabel;
     private static JTable eventTable;
-    private static String[] testDataColumn = {"Monday 13"};
+
+    // added for the date changes on the left panel
+    private int day;
+    private int month;
+    private int year;
+
+//    private static String[] testDataColumn = {"Monday 13"};
+    private String[] testDataColumn = {"Monday 13"};
+//    private String[] testDataColumn;
+
+    public DayView(int day, int month, int year, int startingTime, int endingTime){
+
+    }
+
+    public DayView(int day, int month, int year){
+        this.day = day;
+        this.month = month;
+        this.year = year;
+    }
+
+    public DayView( String[] testDataColumn){
+
+        this.testDataColumn = testDataColumn;
+    }
+
+    public void PrintChangedDate(){
+        System.out.println("PrintChangedDate method in DayView");
+        System.out.println(this.month + " " + this.day + " " + this.year);
+
+
+    }
 
     public DayView(DataModel dataModel)
     {
@@ -46,9 +76,11 @@ public class DayView extends JPanel implements ChangeListener
 
     }
 
-    private static JTable createEventTable()
+//    private static JTable createEventTable()
+    private JTable createEventTable()
     {
         JTable t = new JTable(testDataRow(), testDataColumn);
+
         for (int i = 0; i < rows; ++i)
         {
             t.setRowHeight(i, 32);
@@ -84,7 +116,7 @@ public class DayView extends JPanel implements ChangeListener
     {
         String data[][] = new String[23][1];
         // for(int i = 0; i < rows; ++i){
-        //     String s = "This is libe number" + i;
+        //     String s = "This is line number" + i;
         //     data[i][0] = s;
         // }
         return data;
