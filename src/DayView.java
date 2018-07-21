@@ -1,131 +1,104 @@
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
+import java.awt.geom.*;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.DefaultTableModel;
 
-public class DayView extends JPanel implements ChangeListener
-{
 
-    private static final int rows = 23;
+enum DAYS {
+	Dummy, Sun, Mon, Tue, Wed, Thu, Fri, Sat;
+}
+
+public class DayView extends JPanel implements ChangeListener{
+    
+    private static final int rows = 24;
     private static final int column = 1;
-    private static String[][] events;
-    private static DataModel model;
-    private static JLabel dateLabel;
-    private static JTable eventTable;
-    private static String[] testDataColumn = {"Monday 13"};
+    private String[][] events;
+    private DataModel model;
+    private JLabel dateLabel;
+    private JTable eventTable;
+    private static GregorianCalendar calendar;
+    private static String[] testDataColumn = {""};
 
-    public DayView(DataModel dataModel)
-    {
+    public DayView(DataModel dataModel){
         model = dataModel;
+        calendar = dataModel.getCal();
         events = new String[rows][column];
 
-        // ***********************************************************
-        // The following code makes the initial screen has the DayView
-        // code copied from paintComponent method.
-//        super.paintComponent(g);
         setLayout(new BorderLayout());
-//        Graphics2D g2 = (Graphics2D) g;
         JScrollPane scrollPane = new JScrollPane();
-        dateLabel = new JLabel("Monday 3/31");
+        dateLabel = new JLabel();
+        updateLabel();
 
         JPanel fullPanel = new JPanel(new BorderLayout());
         eventTable = createEventTable();
+        updateEventTable();
         JPanel timePanel = new JPanel();
         timePanel.add(timeTextArea());
         fullPanel.add(timePanel, BorderLayout.WEST);
-        fullPanel.add(verticalSeparator());
         fullPanel.add(eventTable, BorderLayout.CENTER);
-
         scrollPane.setViewportView(fullPanel);
+
         add(dateLabel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
-//        drawSeperator(g2);
-        // ***********************************************************
-
     }
 
-    private static JTable createEventTable()
-    {
-        JTable t = new JTable(testDataRow(), testDataColumn);
-        for (int i = 0; i < rows; ++i)
-        {
+    @Override
+    public void paintComponent(Graphics g){
+        super.paintComponent(g);
+    }
+
+
+    @Override
+    public void stateChanged(ChangeEvent event){
+        updateLabel();
+        updateEventTable();   
+    }
+
+    private JTable createEventTable(){
+        JTable t = new JTable(events,testDataColumn);
+        for(int i = 0; i < rows; ++i){
             t.setRowHeight(i, 32);
         }
         return t;
     }
 
-    private static JComponent verticalSeparator()
-    {
-        JSeparator x = new JSeparator(SwingConstants.VERTICAL);
-        x.setPreferredSize(new Dimension(3, 50));
-        return x;
-    }
-
-    private static JTextArea timeTextArea()
-    {
+    private JTextArea timeTextArea(){
         JTextArea area = new JTextArea();
         area.append("\n");
-        for (int i = 1; i < 13; ++i)
-        {
-            String s = " " + i + "am \n\n";
+        for(int i = 1; i < 13; ++i){
+            String s = " " + i + "am \n\n"; 
             area.append(s);
         }
-        for (int i = 1; i < 12; ++i)
-        {
-            String s = " " + i + "pm \n\n";
+        for(int i = 1; i < 12; ++i){
+            String s = " " + i + "pm \n\n"; 
             area.append(s);
         }
         return area;
     }
 
-    private static String[][] testDataRow()
-    {
-        String data[][] = new String[23][1];
-        // for(int i = 0; i < rows; ++i){
-        //     String s = "This is libe number" + i;
-        //     data[i][0] = s;
-        // }
-        return data;
+    private void updateEventTable(){
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH); 
+        int day = calendar.get(Calendar.DATE);
+        List<Event> eventList = model.getEventInSelectedView(year, month, day, year, month, day);
+        for(Event event : eventList){
+            int startTime = (int)event.getStartHour()*2-1;
+            events[startTime][column] = event.getName();
+        }
+        DefaultTableModel tableModel = (DefaultTableModel) eventTable.getModel();
+        tableModel.fireTableDataChanged();
     }
 
-    @Override
-    public void paintComponent(Graphics g)
-    {
-        super.paintComponent(g);
-        setLayout(new BorderLayout());
-        Graphics2D g2 = (Graphics2D) g;
-        JScrollPane scrollPane = new JScrollPane();
-        dateLabel = new JLabel("Monday 3/31");
-
-        JPanel fullPanel = new JPanel(new BorderLayout());
-        eventTable = createEventTable();
-        JPanel timePanel = new JPanel();
-        timePanel.add(timeTextArea());
-        fullPanel.add(timePanel, BorderLayout.WEST);
-        fullPanel.add(verticalSeparator());
-        fullPanel.add(eventTable, BorderLayout.CENTER);
-
-        scrollPane.setViewportView(fullPanel);
-        add(dateLabel, BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.CENTER);
-        drawSeperator(g2);
+    private void updateLabel(){
+        DAYS[] arrayOfDays = DAYS.values();
+        int day = calendar.get(Calendar.DATE);
+        int dayofweek = calendar.get(Calendar.DAY_OF_WEEK);
+        String s = arrayOfDays[dayofweek] + " " + Integer.toString(day);
+        dateLabel.setText(s);
     }
 
-    @Override
-    public void stateChanged(ChangeEvent event)
-    {
-
-    }
-
-    private void drawSeperator(Graphics2D g2)
-    {
-        double x = eventTable.getWidth();
-//        System.out.println(x);
-        Point2D start = new Point2D.Double(2, 2);
-        Point2D end = new Point2D.Double(2, 2);
-        Line2D seperator = new Line2D.Double(start, end);
-        g2.draw(seperator);
-    }
 }
