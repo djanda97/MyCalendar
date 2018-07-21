@@ -89,8 +89,8 @@ public class DayView extends JPanel implements ChangeListener{
             int startTime = (int)event.getStartHour()*2-1;
             events[startTime][column] = event.getName();
         }
-        DefaultTableModel tableModel = (DefaultTableModel) eventTable.getModel();
-        tableModel.fireTableDataChanged();
+        //DefaultTableModel tableModel = (DefaultTableModel) eventTable.getModel();
+        //tableModel.fireTableDataChanged();
     }
 
     private void updateLabel(){
