@@ -4,13 +4,16 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.util.List;
 
 public class DayView extends JPanel implements ChangeListener
 {
 
+//    private DataModel model;
     private static final int rows = 23;
     private static final int column = 1;
     private static String[][] events;
+    private List<Event> eventList;
     private static DataModel model;
     private static JLabel dateLabel;
     private static JTable eventTable;
@@ -34,16 +37,12 @@ public class DayView extends JPanel implements ChangeListener
         this.year = year;
     }
 
-    public DayView( String[] testDataColumn){
-
-        this.testDataColumn = testDataColumn;
-    }
-
     public void PrintChangedDate(){
         System.out.println("PrintChangedDate method in DayView");
-        System.out.println(this.month + " " + this.day + " " + this.year);
+        System.out.println(model.getClickedMonth() + " " + model.getClickedDay() + " " + model.getClickedYear());
 
-
+        eventList = model.getEventInSelectedView("clickedDay");
+        System.out.println(eventList.toString());
     }
 
     public DayView(DataModel dataModel)

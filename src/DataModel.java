@@ -16,34 +16,39 @@ public class DataModel
     private int eventMonth;
     private int eventYear;
 
+    private int clickedDay;
+    private int clickedMonth;
+    private int clickedYear;
+
     public int getToday()
     {
         return Calendar.getInstance().get(Calendar.DATE);
     }
 
-    public void setEventDay(int eventDay){
-        this.eventDay = eventDay;
+    public DataModel(int clickedDay, int clickedMonth, int clickedYear){
+        this.clickedDay = clickedDay;
+        this.clickedMonth = clickedMonth;
+        this.clickedYear = clickedYear;
     }
 
-    public void setEventMonth(int eventMonth){
-        this.eventMonth = eventMonth;
+    public int getClickedDay(){
+        return this.clickedDay;
     }
 
-    public void setEventYear(int eventYear){
-        this.eventYear = eventYear;
+    public int getClickedMonth(){
+        return this.clickedMonth;
     }
 
-    public int getEventDay(){
-        return this.eventDay;
+    public int getClickedYear(){
+        return this.clickedYear;
     }
 
-    public int getEventMonth(){
-        return this.eventMonth;
+    public void setClickedDay(int clickedDay, int clickedMonth, int clickedYear){
+        this.clickedDay = clickedDay;
+        this.clickedMonth = clickedMonth;
+        this.clickedYear = clickedYear;
     }
 
-    public int getEventYear(){
-        return this.eventYear;
-    }
 
     public DataModel()
     {
@@ -308,7 +313,22 @@ public class DataModel
 	    		}
 	    	}
 	    	//checks if viewtype is month
-    	} else if("month".equalsIgnoreCase(viewType)) {
+    	}
+
+        if("clickedDay".equalsIgnoreCase(viewType)) {
+            for(Event e: eventList) {
+                if(e.getYear() == getClickedYear()
+                        && e.getStartMonth() == getClickedMonth()+ 1
+                        && e.getDay() == getClickedDay()) {
+                    eventListInSelectedView.add(e);// adds event in the viewtype
+                }
+            }
+            //checks if viewtype is month
+        }
+
+
+
+        else if("month".equalsIgnoreCase(viewType)) {
     		for(Event e: eventList) {
 	    		if(e.getYear() == getCurrentYear()
 	    				&& e.getStartMonth() == (getCurrentMonth() + 1)) {
@@ -361,5 +381,31 @@ public class DataModel
     		}
     	}
     	return eventListInSelectedView;
+    }
+
+
+
+    public void setEventDay(int eventDay){
+        this.eventDay = eventDay;
+    }
+
+    public void setEventMonth(int eventMonth){
+        this.eventMonth = eventMonth;
+    }
+
+    public void setEventYear(int eventYear){
+        this.eventYear = eventYear;
+    }
+
+    public int getEventDay(){
+        return this.eventDay;
+    }
+
+    public int getEventMonth(){
+        return this.eventMonth;
+    }
+
+    public int getEventYear(){
+        return this.eventYear;
     }
 }

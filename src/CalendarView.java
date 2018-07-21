@@ -69,10 +69,15 @@ public class CalendarView extends JFrame implements ChangeListener
         changedToDay = day;
 //        System.out.println("changedToDay is " + changedToDay);
 
-        DayView dayView = new DayView(changedToDay, changedToMonth, changedToYear);
+        DayView dayView = new DayView(model);
+//        model = new DataModel(changedToDay, changedToMonth,changedToYear);
+
+
+        model.setClickedDay(changedToDay, changedToMonth,changedToYear);
         dayView.PrintChangedDate();
 
     }
+
 
     private void changeMonth(String option)
     {
