@@ -1,8 +1,10 @@
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
 import java.awt.*;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class CalendarView extends JFrame implements ChangeListener
@@ -11,6 +13,7 @@ public class CalendarView extends JFrame implements ChangeListener
     private static final int DEFAULT_HEIGHT = 400;
     private final static int DAYS_IN_WEEK = 7;
     private final static int TEXT_COLUMN = 55;
+    private final static int MAX_DAY_BUTTONS = 42;
     private DataModel model;
     private List<Event> eventList;
     private JTextArea textArea;
@@ -35,12 +38,6 @@ public class CalendarView extends JFrame implements ChangeListener
 
     private void changeDay(String option)
     {
-        int currentDay = model.getCurrentDay();
-
-        dayButton[currentDay].setBackground(null);
-        dayButton[currentDay].setOpaque(false);
-        dayButton[currentDay].setBorderPainted(true);
-
         if (option.equalsIgnoreCase("prev"))
         {
         	model.prevDay();
@@ -49,11 +46,6 @@ public class CalendarView extends JFrame implements ChangeListener
         {
         	model.nextDay();
         }
-
-        int day = model.getCurrentDay();
-        dayButton[day].setBackground(Color.GRAY);
-        dayButton[day].setOpaque(true);
-        dayButton[day].setBorderPainted(true);
     }
 
     private void changeMonth(String option)
@@ -66,10 +58,6 @@ public class CalendarView extends JFrame implements ChangeListener
         {
         	model.nextMonth();
         }
-
-        int month = model.getCurrentMonth();
-        textArea.setText(String.valueOf(months[month]) + " ");
-        textArea.append(String.valueOf(model.getCurrentYear()) + "\n\n");
     }
 
     private void createLeftPanel()
@@ -80,24 +68,7 @@ public class CalendarView extends JFrame implements ChangeListener
         JButton buttonToday = new JButton("Today");
         buttonToday.addActionListener(event ->
         {
-            model.getCal().set(Calendar.DATE, model.getToday());
-            for (int i = 1; i < model.getMonthDays() + 1; i++)
-            {
-                if (i == model.getToday())
-                {
-                    dayButton[model.getToday()].setBackground(Color.PINK);
-                    dayButton[model.getToday()].setOpaque(true);
-                    dayButton[model.getToday()].setBorderPainted(true);
-                }
-                else
-                {
-                    dayButton[i].setBackground(null);
-                    dayButton[i].setOpaque(false);
-                    dayButton[i].setBorderPainted(true);
-                }
-            }
-            // call get day method
-            // model.goto method.
+            model.setCal(new GregorianCalendar());
         });
 
         JButton buttonPrevDay = new JButton("<");
@@ -249,38 +220,35 @@ public class CalendarView extends JFrame implements ChangeListener
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.PAGE_AXIS));
 
         JPanel daysOfWeekPanel = new JPanel();
-        daysOfWeekPanel.setLayout(new GridLayout(1, DAYS_IN_WEEK - 1));
+        daysOfWeekPanel.setLayout(new GridLayout(1, DAYS_IN_WEEK));
         JLabel[] dayOfWeekLabel = new JLabel[DAYS_IN_WEEK];
+        
+        for (int j = 0; j < days.length; j++)
+        {
+            dayOfWeekLabel[j] = new JLabel(days[j], JLabel.CENTER);
+            daysOfWeekPanel.add(dayOfWeekLabel[j]);
+        }
 
         JPanel daysPanel = new JPanel();
-        daysPanel.setLayout(new GridLayout(5, DAYS_IN_WEEK));
-        dayButton = new JButton[model.getMonthDays() + 1];
-
-        for (int i = 1; i < model.getMonthDays() + 1; i++)
-        {
-            if (i == 1)
-            {
-                for (int j = 0; j < days.length; j++)
-                {
-                    dayOfWeekLabel[j] = new JLabel(days[j], JLabel.CENTER);
-                    daysOfWeekPanel.add(dayOfWeekLabel[j]);
-                }
-            }
-
-            dayButton[i] = new JButton(String.valueOf(i));
-            dayButton[i].setPreferredSize(new Dimension(50, 50));
-            daysPanel.add(dayButton[i]);
-
-            if (i == model.getCurrentDay())
-            {
-                dayButton[i].setBackground(Color.PINK);
-                dayButton[i].setOpaque(true);
-                dayButton[i].setBorderPainted(true);
-            }
-
+        daysPanel.setLayout(new GridLayout(0, DAYS_IN_WEEK));
+        
+        dayButton = new JButton[MAX_DAY_BUTTONS];
+        //init dayButton
+        for(int i = 0; i < MAX_DAY_BUTTONS; i++) {
+        	dayButton[i] = new JButton();
+        	dayButton[i].setPreferredSize(new Dimension(50, 50));
+        }
+        updateDayButtons();
+       
+        
+        for(int i = 0; i < MAX_DAY_BUTTONS; i++) {
+        	// add action listener to the buttons
+        	final int day = i + 1;
             dayButton[i].addActionListener(event ->
             {
-                model.printEventList();
+            	model.setDay(day);
+            	eventList = model.getEventInSelectedView("day");
+                updateDayButtons();
 
                 // update the event day, month, year for eventPanel to use.
 
@@ -291,6 +259,10 @@ public class CalendarView extends JFrame implements ChangeListener
 
                 //  shows the events on that day on DayView panel, go to method
             });
+        	
+            // Add button to daysPanel
+            if(dayButton[i] != null)
+        		daysPanel.add(dayButton[i]);
         }
 
         leftPanel.add(leftButtonPanel);
@@ -299,6 +271,49 @@ public class CalendarView extends JFrame implements ChangeListener
         leftPanel.add(daysOfWeekPanel);
         leftPanel.add(daysPanel);
         this.add(leftPanel, BorderLayout.WEST);
+    }
+    
+    private void updateDayButtons()
+    {
+    	GregorianCalendar temp = new GregorianCalendar(model.getCurrentYear(), model.getCurrentMonth(), 1);
+    	int k = temp.get(Calendar.DAY_OF_WEEK);
+    	int dayButtonIndex = 0;
+    	temp.add(Calendar.DATE, -1);
+    	int prevDay = temp.get(Calendar.DAY_OF_MONTH) - k + 1;
+	    for(; dayButtonIndex < k - 1 ; dayButtonIndex++) {
+	    	dayButton[dayButtonIndex].setText(String.valueOf(prevDay++));
+	    	dayButton[dayButtonIndex].setEnabled(false);
+	    }
+    	for (int i = 0; i < model.getMonthDays(); i++, dayButtonIndex++)
+        {
+            dayButton[dayButtonIndex].setText(String.valueOf(i+1));
+            dayButton[dayButtonIndex].setEnabled(true);
+            
+            dayButton[dayButtonIndex].setBackground(null);
+            dayButton[dayButtonIndex].setOpaque(false);
+            dayButton[dayButtonIndex].setBorderPainted(true);
+            
+            if (i + 1 == model.getCurrentDay())
+            {
+                dayButton[dayButtonIndex].setBackground(Color.GRAY);
+                dayButton[dayButtonIndex].setOpaque(true);
+                dayButton[dayButtonIndex].setBorderPainted(true);
+            }
+            if (i + 1 == model.getCurrentDay() && model.isToday())
+            {
+                dayButton[dayButtonIndex].setBackground(Color.PINK);
+                dayButton[dayButtonIndex].setOpaque(true);
+                dayButton[dayButtonIndex].setBorderPainted(true);
+            }
+        }
+    	
+    	for(int d = 0; dayButtonIndex < MAX_DAY_BUTTONS; d++, dayButtonIndex++) {
+    		dayButton[dayButtonIndex].setText(String.valueOf(d+1));
+    		dayButton[dayButtonIndex].setEnabled(false);
+    	}
+    	int month = model.getCurrentMonth(); 
+    	textArea.setText(String.valueOf(months[month]) + " ");
+        textArea.append(String.valueOf(model.getCurrentYear()) + "\n\n");
     }
 
     private void createRightPanel()
@@ -453,6 +468,6 @@ public class CalendarView extends JFrame implements ChangeListener
 
     public void stateChanged(ChangeEvent e)
     {
-
+    	updateDayButtons();
     }
 }
