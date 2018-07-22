@@ -32,6 +32,15 @@ public class DataModel
     public void setEventYear(int eventYear){
         this.eventYear = eventYear;
     }
+    
+    public void setCal(GregorianCalendar cal){
+        this.cal = cal;
+    }
+    
+    public void setDay(int day){
+        this.cal.set(Calendar.DAY_OF_MONTH, day);
+        update();
+    }
 
     public int getEventDay(){
         return this.eventDay;
@@ -235,6 +244,11 @@ public class DataModel
             System.out.println(e.toString());
         }
     }
+    
+    public void printEventListSize()
+    {
+    	System.out.println(eventList.size());
+    }
 
     public GregorianCalendar getCal()
     {
@@ -301,6 +315,7 @@ public class DataModel
     public List<Event> getEventInSelectedView(String viewType) {
     	sortEvent();
     	List<Event> eventListInSelectedView = new ArrayList<Event>();
+    	
     	// checks if view type is day
     	if("day".equalsIgnoreCase(viewType)) {
 	    	for(Event e: eventList) {
@@ -310,7 +325,7 @@ public class DataModel
 	    			eventListInSelectedView.add(e);// adds event in the viewtype
 	    		}
 	    	}
-	    	//checks if viewtype is month
+	    //checks if viewtype is month
     	} else if("month".equalsIgnoreCase(viewType)) {
     		for(Event e: eventList) {
 	    		if(e.getYear() == getCurrentYear()
@@ -318,17 +333,18 @@ public class DataModel
 	    			eventListInSelectedView.add(e);
 	    		}
 	    	}
-    		//checks if the viewtype is week view
+    		
+    	//checks if the viewtype is week view
     	} else if("week".equalsIgnoreCase(viewType)) {
     		int weekLowerThreshold = getCal().get(Calendar.DAY_OF_WEEK) - 1;//****** the first day of the week******
     		int weekUpperThreshold = 7 - getCal().get(Calendar.DAY_OF_WEEK);//****** the last day of the week*******
-    		//System.out.println(weekLowerThreshold + " " + getCal().get(Calendar.DAY_OF_WEEK) + " " + weekUpperThreshold);
+    		
     		for(Event e: eventList) {
     			GregorianCalendar eventCal = new GregorianCalendar(e.getYear(), (e.getStartMonth() - 1), e.getDay());
+    			
     			// the time difference
     			double diff = (1.0 * getCal().getTimeInMillis() - eventCal.getTimeInMillis()) / (1000 * 60 * 60 * 24);
-    			//System.out.println(getCal().getTimeInMillis() + " " +  eventCal.getTimeInMillis());
-    			//System.out.println(diff + " " + (diff < 0 && Math.abs(diff) < weekLowerThreshold) + " " + (diff >=0 && diff <= weekUpperThreshold));
+
     			if(diff < 0 && Math.abs(diff) < weekUpperThreshold) {
     				eventListInSelectedView.add(e);
     			} else if(diff > 0 && diff <= weekLowerThreshold) {
@@ -364,5 +380,12 @@ public class DataModel
     		}
     	}
     	return eventListInSelectedView;
+    }
+    
+    public boolean isToday() {
+    	GregorianCalendar today = new GregorianCalendar();
+    	return getCurrentYear() == today.get(Calendar.YEAR)
+    			&& getCurrentMonth() == today.get(Calendar.MONTH)
+    			&& getCurrentDay() == today.get(Calendar.DAY_OF_MONTH);
     }
 }
