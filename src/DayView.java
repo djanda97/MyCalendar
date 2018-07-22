@@ -5,7 +5,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.event.*;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.table.*;
 
 
 enum DAYS {
@@ -16,17 +16,16 @@ public class DayView extends JPanel implements ChangeListener{
     
     private static final int rows = 24;
     private static final int column = 1;
-    private String[][] events;
+    private TableModel eventTableModel;
     private DataModel model;
     private JLabel dateLabel;
     private JTable eventTable;
     private static GregorianCalendar calendar;
-    private static String[] testDataColumn = {""};
 
     public DayView(DataModel dataModel){
         model = dataModel;
         calendar = dataModel.getCal();
-        events = new String[rows][column];
+        eventTableModel = new DefaultTableModel(rows,column);
 
         setLayout(new BorderLayout());
         JScrollPane scrollPane = new JScrollPane();
@@ -59,7 +58,7 @@ public class DayView extends JPanel implements ChangeListener{
     }
 
     private JTable createEventTable(){
-        JTable t = new JTable(events,testDataColumn);
+        JTable t = new JTable(eventTableModel);
         for(int i = 0; i < rows; ++i){
             t.setRowHeight(i, 32);
         }
@@ -82,15 +81,18 @@ public class DayView extends JPanel implements ChangeListener{
 
     private void updateEventTable(){
         int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH); 
+        int month = calendar.get(Calendar.MONTH)+1; 
         int day = calendar.get(Calendar.DATE);
         List<Event> eventList = model.getEventInSelectedView(year, month, day, year, month, day);
         for(Event event : eventList){
-            int startTime = (int)event.getStartHour()*2-1;
-            events[startTime][column] = event.getName();
+            int startTime = (int)event.getStartHour()-1;
+            eventTableModel.setValueAt(event.getName(), startTime, column-1);
         }
-        //DefaultTableModel tableModel = (DefaultTableModel) eventTable.getModel();
-        //tableModel.fireTableDataChanged();
+        DefaultTableModel tableModel = (DefaultTableModel) eventTable.getModel();
+        tableModel.fireTableDataChanged();
+        for(int i = 0; i < rows; ++i){
+            eventTable.setRowHeight(i, 32);
+        }
     }
 
     private void updateLabel(){

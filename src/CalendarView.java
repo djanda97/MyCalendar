@@ -30,6 +30,7 @@ public class CalendarView extends JFrame implements ChangeListener
         this.createRightPanel();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
+        
     }
 
     private void changeDay(String option)
@@ -297,7 +298,6 @@ public class CalendarView extends JFrame implements ChangeListener
         leftPanel.add(monthButtonPanel);
         leftPanel.add(daysOfWeekPanel);
         leftPanel.add(daysPanel);
-
         this.add(leftPanel, BorderLayout.WEST);
     }
 
@@ -445,8 +445,9 @@ public class CalendarView extends JFrame implements ChangeListener
             }
         	model.printEventList();
         });
-
-        rightPanel.add(new DayView(model), BorderLayout.CENTER);
+        DayView dayView = new DayView(model);
+        model.attach(dayView);
+        rightPanel.add(dayView, BorderLayout.CENTER);
         this.add(rightPanel, BorderLayout.CENTER);
     }
 

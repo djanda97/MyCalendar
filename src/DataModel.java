@@ -80,9 +80,10 @@ public class DataModel
 		Event e = new Event(name, year, startMonth, day, startHour);
 		if(checkConflict(e)) {
 			eventList.add(e);
-			update();
+            update();
 			return true;
-		}
+        }
+        update();
 		return false;
 	}
 
@@ -97,6 +98,7 @@ public class DataModel
             update();
             return true;
         }
+        update();
         return false;
     }
 
@@ -111,6 +113,7 @@ public class DataModel
             update();
             return true;
         }
+        update();
         return false;
     }
 
