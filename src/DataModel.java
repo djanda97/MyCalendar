@@ -35,6 +35,7 @@ public class DataModel
     
     public void setCal(GregorianCalendar cal){
         this.cal = cal;
+        update();
     }
     
     public void setDay(int day){
