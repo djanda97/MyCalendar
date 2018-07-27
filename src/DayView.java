@@ -21,11 +21,14 @@ public class DayView extends JPanel implements ChangeListener{
     private JLabel dateLabel;
     private JTable eventTable;
     private static GregorianCalendar calendar;
+    private int[] tempDates;
 
     public DayView(DataModel dataModel){
         model = dataModel;
         calendar = dataModel.getCal();
         eventTableModel = new DefaultTableModel(rows,column);
+        tempDates = new int[]{calendar.get(Calendar.DATE),calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.YEAR)};
+
 
         setLayout(new BorderLayout());
         JScrollPane scrollPane = new JScrollPane();
@@ -83,18 +86,26 @@ public class DayView extends JPanel implements ChangeListener{
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH)+1; 
         int day = calendar.get(Calendar.DATE);
+
+        if(tempDates[0] != day || tempDates[1] != month || tempDates[2] != year){
+            for(int i = 0; i < rows; ++i){
+                eventTableModel.setValueAt("", i, column-1);
+            }    
+        }
+
         List<Event> eventList = model.getEventInSelectedView(year, month, day, year, month, day);
         for(Event event : eventList){
             int startTime = (int)event.getStartHour()-1;
             eventTableModel.setValueAt(event.getName(), startTime, column-1);
         }
+
         DefaultTableModel tableModel = (DefaultTableModel) eventTable.getModel();
         tableModel.fireTableDataChanged();
+
         for(int i = 0; i < rows; ++i){
             eventTable.setRowHeight(i, 32);
         }
     }
-
     private void updateLabel(){
         DAYS[] arrayOfDays = DAYS.values();
         int day = calendar.get(Calendar.DATE);
