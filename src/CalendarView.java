@@ -19,6 +19,7 @@ public class CalendarView extends JFrame implements ChangeListener
     private DataModel model;
     private DayView dayView;
     private WeekView weekView;
+    private MonthView monthView;
     private List<Event> eventList;
     private JTextArea textArea;
     private JButton[] dayButton;
@@ -35,8 +36,10 @@ public class CalendarView extends JFrame implements ChangeListener
         model = m;
         dayView = new DayView(model);
         weekView = new WeekView(model);
+        monthView = new MonthView(model);
         model.attach(dayView);
         model.attach(weekView);
+        model.attach(monthView);
 
         this.setTitle("Calendar");
         this.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -379,6 +382,7 @@ public class CalendarView extends JFrame implements ChangeListener
         	eventList = model.getEventInSelectedView("day");
             System.out.println(eventList.toString());
             weekView.setVisible(false);
+            monthView.setVisible(false);
             rightPanel.remove(1);
             rightPanel.add(dayView,BorderLayout.CENTER);
             dayView.setVisible(true);
@@ -388,6 +392,7 @@ public class CalendarView extends JFrame implements ChangeListener
         {
         	eventList = model.getEventInSelectedView("week");
             dayView.setVisible(false);
+            monthView.setVisible(false);
             rightPanel.remove(1);
             rightPanel.add(weekView, BorderLayout.CENTER);
             weekView.setVisible(true);
@@ -396,7 +401,11 @@ public class CalendarView extends JFrame implements ChangeListener
         buttonMonth.addActionListener(event ->
         {
         	eventList = model.getEventInSelectedView("month");
-        	System.out.println(eventList.toString());
+        	dayView.setVisible(false);
+        	weekView.setVisible(false);
+            rightPanel.remove(1);
+            rightPanel.add(monthView, BorderLayout.CENTER);
+            monthView.setVisible(true);
         });
 
         buttonAgenda.addActionListener(event ->
