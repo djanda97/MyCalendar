@@ -11,24 +11,26 @@ enum DAYS {
 }
 
 
-public class DayView extends JPanel implements ChangeListener{
+public class WeekView extends JPanel implements ChangeListener{
     
     private DataModel model;
     private static Calendar calendar;
     
-    private static final int TIME_ROWS = 23;
+    private static final int TIME_ROWS = 24;
     private static final int TIME_COLUMN = 1;
-    private static final int COLUMN = 2;
+    private static final int WEEK_COLUMNS = 8;
+    private static final int COLUMNS = 2;
     private static final int ROW_HEIGHT = 64;
+    private static final int COLUMN_WIDTH = 150;
     private TableModel eventTableModel;
     private JLabel dateLabel;
     private JTable eventTable;
     private int tempDate[];
 
-    public DayView(DataModel dataModel){
+    public WeekView(DataModel dataModel){
         model = dataModel;
         calendar = model.getCal();
-        eventTableModel = new DefaultTableModel(TIME_ROWS,COLUMN);
+        eventTableModel = new DefaultTableModel(TIME_ROWS,WEEK_COLUMNS);
         tempDate = new int[]{calendar.get(Calendar.DATE),calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.YEAR)};
 
 
@@ -63,7 +65,9 @@ public class DayView extends JPanel implements ChangeListener{
 
     private JTable createEventTable(){
         for(int i = 0; i < TIME_ROWS; ++i){
-            eventTableModel.setValueAt(0, i, COLUMN-1);
+            for(int j = 0; j < WEEK_COLUMNS; ++j){
+                eventTableModel.setValueAt(0, i, j);
+            }
         }
         JTable t = new JTable(eventTableModel){
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column)
@@ -73,7 +77,7 @@ public class DayView extends JPanel implements ChangeListener{
                     if(!isRowSelected(row)){
                         c.setBackground(getBackground());
                         int modelRow = convertRowIndexToModel(row);
-                        int data = (int)getModel().getValueAt(modelRow, COLUMN-1);
+                        int data = (int)getModel().getValueAt(modelRow, COLUMNS-1);
                         if(data == 1) c.setBackground(Color.YELLOW);
                         if(data == 2) c.setBackground(new Color(176,224,230));
                         if(data == 3) c.setBackground(Color.RED);
@@ -102,9 +106,12 @@ public class DayView extends JPanel implements ChangeListener{
         for(int i = 0; i < TIME_ROWS; ++i){
             t.setRowHeight(i, ROW_HEIGHT/2);
         }
-        t.getColumnModel().getColumn(1).setMinWidth(0);
-        t.getColumnModel().getColumn(1).setMaxWidth(0);
-        t.getColumnModel().getColumn(1).setWidth(0);
+        for(int i = 1; i< WEEK_COLUMNS; ++i){
+            t.getColumnModel().getColumn(i).setPreferredWidth(COLUMN_WIDTH);;
+        }
+        t.getColumnModel().getColumn(0).setMinWidth(0);
+        t.getColumnModel().getColumn(0).setMaxWidth(0);
+        t.getColumnModel().getColumn(0).setWidth(0);
         return t;
     }
 
@@ -112,11 +119,11 @@ public class DayView extends JPanel implements ChangeListener{
         TableModel model = new DefaultTableModel(TIME_ROWS,TIME_COLUMN);
         for(int i = 1; i < 13; ++i){
             String s = " " + i + "am"; 
-            model.setValueAt(s, i-1, TIME_COLUMN-1);
+            model.setValueAt(s, i, TIME_COLUMN-1);
         }
         for(int i = 1; i < 12; ++i){
             String s = " " + i + "pm"; 
-            model.setValueAt(s, i+11, TIME_COLUMN-1);
+            model.setValueAt(s, i+12, TIME_COLUMN-1);
         }
         JTable t = new JTable(model);
         for(int i = 0; i < TIME_ROWS; ++i){
@@ -132,8 +139,8 @@ public class DayView extends JPanel implements ChangeListener{
 
         if(tempDate[0] != day || tempDate[1] != month || tempDate[2] != year){
             for(int i = 0; i < TIME_ROWS; ++i){
-                eventTableModel.setValueAt("", i, COLUMN-2);
-                eventTableModel.setValueAt(0, i, COLUMN-1);
+                eventTableModel.setValueAt("", i, COLUMNS-2);
+                eventTableModel.setValueAt(0, i, COLUMNS-1);
             } 
             tempDate[0] = day;
             tempDate[1] = month;
@@ -146,9 +153,9 @@ public class DayView extends JPanel implements ChangeListener{
         for(Event event : eventList){
             int eventIndex = ((int)event.getStartHour()-1);
             int hightlightIndex = ((int)event.getEndHour()-1);
-            eventTableModel.setValueAt(event.getName(), eventIndex, COLUMN-2);
+            eventTableModel.setValueAt(event.getName(), eventIndex, COLUMNS-2);
             for(int i = eventIndex; i <= hightlightIndex; ++i){
-                eventTableModel.setValueAt(hiddenData, i, COLUMN-1);
+                eventTableModel.setValueAt(hiddenData, i, COLUMNS-1);
             }
             ++hiddenData;
         }

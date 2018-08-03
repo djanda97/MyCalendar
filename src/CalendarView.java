@@ -22,10 +22,19 @@ public class CalendarView extends JFrame implements ChangeListener
             "July", "August", "September", "October", "November", "December"};
     private String[] days = {"Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"};
 
+    private DayView dayView;
+    private WeekView weekView;
+
     public CalendarView(DataModel m)
     {
 //        eventList = new ArrayList<>();
         this.model = m;
+
+        dayView = new DayView(model);
+        weekView = new WeekView(model);
+        model.attach(weekView);
+        model.attach(weekView);
+
         this.setTitle("Calendar");
         this.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         this.setLayout(new BorderLayout());
@@ -343,13 +352,20 @@ public class CalendarView extends JFrame implements ChangeListener
             // call get day method
             // model.goto method.
         	eventList = model.getEventInSelectedView("day");
-        	System.out.println(eventList.toString());
+            System.out.println(eventList.toString());
+            weekView.setVisible(false);
+            rightPanel.remove(1);
+            rightPanel.add(dayView,BorderLayout.CENTER);
+            dayView.setVisible(true);
         });
 
         buttonWeek.addActionListener(event ->
         {
-        	eventList = model.getEventInSelectedView("week");
-        	System.out.println(eventList.toString());
+            eventList = model.getEventInSelectedView("week");
+            dayView.setVisible(false);
+            rightPanel.remove(1);
+            rightPanel.add(weekView, BorderLayout.CENTER);
+            weekView.setVisible(true);
         });
 
         buttonMonth.addActionListener(event ->
@@ -460,8 +476,6 @@ public class CalendarView extends JFrame implements ChangeListener
             }
         	model.printEventList();
         });
-        DayView dayView = new DayView(model);
-        model.attach(dayView);
         rightPanel.add(dayView, BorderLayout.CENTER);
         this.add(rightPanel, BorderLayout.CENTER);
     }
