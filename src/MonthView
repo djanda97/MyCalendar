@@ -58,7 +58,8 @@ public class MonthView extends JPanel implements ChangeListener, View {
         updateEventTable();   
     }
 
-    private JTable createEventTable(){
+    @Override
+    public JTable createEventTable(){
         for(int i = 0; i < TIME_ROWS; ++i){
             for(int j = 0; j < MONTH_COLUMNS; ++j){
             	if(i == 0) {
@@ -114,7 +115,8 @@ public class MonthView extends JPanel implements ChangeListener, View {
         return t;
     }
 
-    private JTable timeTable(){
+    @Override
+    public JTable timeTable(){
         TableModel model = new DefaultTableModel(TIME_ROWS, TIME_COLUMN);
         for(int i = 1; i < 13; ++i){
             String s = " " + i + "am"; 
@@ -131,7 +133,8 @@ public class MonthView extends JPanel implements ChangeListener, View {
         return t;
     }
 
-    private void updateEventTable(){
+    @Override
+    public void updateEventTable(){
         List<Event> eventList = model.getEventInSelectedView("month");
 
         int hiddenData = 1;
@@ -150,7 +153,9 @@ public class MonthView extends JPanel implements ChangeListener, View {
             eventTable.setRowHeight(i, ROW_HEIGHT);
         }
     }
-    private void updateLabel(){
+    
+    @Override
+    public void updateLabel(){
         DAYS[] arrayOfDays = DAYS.values();
         int day = calendar.get(Calendar.DATE);
         int dayofweek = calendar.get(Calendar.DAY_OF_WEEK);
