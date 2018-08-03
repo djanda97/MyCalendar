@@ -252,7 +252,7 @@ public class CalendarView extends JFrame implements ChangeListener
         
         for(int i = 0; i < MAX_DAY_BUTTONS; i++) {
         	// add action listener to the buttons
-        	final int day = i + 1;
+        	final int day = Integer.parseInt(dayButton[i].getText());
             dayButton[i].addActionListener(event ->
             {
             	model.setDay(day);
@@ -291,6 +291,9 @@ public class CalendarView extends JFrame implements ChangeListener
     	int prevDay = temp.get(Calendar.DAY_OF_MONTH) - k + 1;
 	    for(; dayButtonIndex < k - 1 ; dayButtonIndex++) {
 	    	dayButton[dayButtonIndex].setText(String.valueOf(prevDay++));
+	    	dayButton[dayButtonIndex].setBackground(null);
+            dayButton[dayButtonIndex].setOpaque(false);
+            dayButton[dayButtonIndex].setBorderPainted(true);
 	    	dayButton[dayButtonIndex].setEnabled(false);
 	    }
     	for (int i = 0; i < model.getMonthDays(); i++, dayButtonIndex++)
