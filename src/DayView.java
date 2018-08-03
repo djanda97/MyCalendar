@@ -1,5 +1,4 @@
 import java.awt.*;
-import java.awt.geom.*;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
@@ -17,9 +16,13 @@ enum DAYS
 /**
  * This class displays events that occur on the selected day.
  */
-public class DayView extends JPanel implements ChangeListener
+public class DayView extends JPanel implements ChangeListener, View
 {
-    private DataModel model;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private DataModel model;
     private static Calendar calendar;
     private static final int TIME_ROWS = 23;
     private static final int TIME_COLUMN = 1;
@@ -82,7 +85,8 @@ public class DayView extends JPanel implements ChangeListener
      * Creates a table to show the events.
      * @return Table to show the events.
      */
-    private JTable createEventTable()
+    @Override
+	public JTable createEventTable()
     {
         for (int i = 0; i < TIME_ROWS; ++i)
         {
@@ -139,7 +143,8 @@ public class DayView extends JPanel implements ChangeListener
      * Creates a table to display the time.
      * @return Table to display the time.
      */
-    private JTable timeTable(){
+    @Override
+    public JTable timeTable(){
         TableModel model = new DefaultTableModel(TIME_ROWS,TIME_COLUMN);
 
         for (int i = 1; i < 13; ++i)
@@ -166,7 +171,8 @@ public class DayView extends JPanel implements ChangeListener
     /**
      * Updates the table to display events.
      */
-    private void updateEventTable()
+    @Override
+    public void updateEventTable()
     {
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH) + 1; 
@@ -211,7 +217,8 @@ public class DayView extends JPanel implements ChangeListener
     /**
      * Updates the label that displays the date.
      */
-    private void updateLabel()
+    @Override
+    public void updateLabel()
     {
         DAYS[] arrayOfDays = DAYS.values();
         int day = calendar.get(Calendar.DATE);
