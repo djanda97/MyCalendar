@@ -6,13 +6,11 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 
-enum DAYS {
-	Dummy, Sun, Mon, Tue, Wed, Thu, Fri, Sat;
-}
-
-
-public class WeekView extends JPanel implements ChangeListener{
-    
+/**
+ * This class displays events that occur on the selected week.
+ */
+public class WeekView extends JPanel implements ChangeListener
+{    
     private DataModel model;
     private static Calendar calendar;
     
@@ -27,12 +25,16 @@ public class WeekView extends JPanel implements ChangeListener{
     private JTable eventTable;
     private int tempDate[];
 
-    public WeekView(DataModel dataModel){
+    /**
+     * Constructor that sets up the week view.
+     * @param dataModel DataModel object.
+     */
+    public WeekView(DataModel dataModel)
+    {
         model = dataModel;
         calendar = model.getCal();
         eventTableModel = new DefaultTableModel(TIME_ROWS,WEEK_COLUMNS);
         tempDate = new int[]{calendar.get(Calendar.DATE),calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.YEAR)};
-
 
         setLayout(new BorderLayout());
         JScrollPane scrollPane = new JScrollPane();
@@ -46,101 +48,138 @@ public class WeekView extends JPanel implements ChangeListener{
         fullPanel.add(eventTable, BorderLayout.CENTER);
         scrollPane.setViewportView(fullPanel);
         
-
         add(dateLabel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
     }
 
+    /**
+     * Paints the component.
+     * @param g Graphics context.
+     */
     @Override
-    public void paintComponent(Graphics g){
+    public void paintComponent(Graphics g)
+    {
         super.paintComponent(g);
     }
 
 
+    /**
+     * Called when the model is updated.
+     * @param event ChangeEvent.
+     */
     @Override
-    public void stateChanged(ChangeEvent event){
+    public void stateChanged(ChangeEvent event)
+    {
         updateLabel();
         updateEventTable();   
     }
 
-    private JTable createEventTable(){
-        for(int i = 0; i < TIME_ROWS; ++i){
-            for(int j = 0; j < WEEK_COLUMNS; ++j){
+    /**
+     * Creates a table to show the events.
+     * @return Table to show the events.
+     */
+    private JTable createEventTable()
+    {
+        for (int i = 0; i < TIME_ROWS; ++i)
+        {
+            for (int j = 0; j < WEEK_COLUMNS; ++j)
+            {
                 eventTableModel.setValueAt(0, i, j);
             }
         }
-        JTable t = new JTable(eventTableModel){
+        JTable t = new JTable(eventTableModel)
+        {
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column)
             {
                 Component c = super.prepareRenderer(renderer, row, column);
 
-                    if(!isRowSelected(row)){
-                        c.setBackground(getBackground());
-                        int modelRow = convertRowIndexToModel(row);
-                        int data = (int)getModel().getValueAt(modelRow, COLUMNS-1);
-                        if(data == 1) c.setBackground(Color.YELLOW);
-                        if(data == 2) c.setBackground(new Color(176,224,230));
-                        if(data == 3) c.setBackground(Color.RED);
-                        if(data == 4) c.setBackground(Color.PINK);
-                        if(data == 5) c.setBackground(Color.ORANGE);
-                        if(data == 6) c.setBackground(Color.MAGENTA);
-                        if(data == 7) c.setBackground(Color.LIGHT_GRAY);
-                        if(data == 8) c.setBackground(Color.GREEN);
-                        if(data == 9) c.setBackground(new Color(128, 0, 128));
-                        if(data == 10) c.setBackground(new Color(0, 128, 128));
-                        if(data == 11) c.setBackground(new Color(152,251,152));
-                        if(data == 12) c.setBackground(new Color(128, 128, 0));
-                        if(data == 13) c.setBackground(new Color(128, 0, 0));
-                        if(data == 14) c.setBackground(new Color(192, 192, 192));
-                        if(data == 15) c.setBackground(new Color(0, 255, 255));
-                        if(data == 16) c.setBackground(new Color(255, 215, 0));
-                        if(data == 17) c.setBackground(new Color(255, 127, 0));
-                        if(data == 18) c.setBackground(new Color(210, 105, 30));
-
-                    }
+                if (!isRowSelected(row))
+                {
+                    c.setBackground(getBackground());
+                    int modelRow = convertRowIndexToModel(row);
+                    int data = (int)getModel().getValueAt(modelRow, COLUMNS - 1);
+                    if (data == 1) c.setBackground(Color.YELLOW);
+                    if (data == 2) c.setBackground(new Color(176,224,230));
+                    if (data == 3) c.setBackground(Color.RED);
+                    if (data == 4) c.setBackground(Color.PINK);
+                    if (data == 5) c.setBackground(Color.ORANGE);
+                    if (data == 6) c.setBackground(Color.MAGENTA);
+                    if (data == 7) c.setBackground(Color.LIGHT_GRAY);
+                    if (data == 8) c.setBackground(Color.GREEN);
+                    if (data == 9) c.setBackground(new Color(128, 0, 128));
+                    if (data == 10) c.setBackground(new Color(0, 128, 128));
+                    if (data == 11) c.setBackground(new Color(152,251,152));
+                    if (data == 12) c.setBackground(new Color(128, 128, 0));
+                    if (data == 13) c.setBackground(new Color(128, 0, 0));
+                    if (data == 14) c.setBackground(new Color(192, 192, 192));
+                    if (data == 15) c.setBackground(new Color(0, 255, 255));
+                    if (data == 16) c.setBackground(new Color(255, 215, 0));
+                    if (data == 17) c.setBackground(new Color(255, 127, 0));
+                    if (data == 18) c.setBackground(new Color(210, 105, 30));
+                }
 
                 return c;
             }
         };
 
-        for(int i = 0; i < TIME_ROWS; ++i){
+        for (int i = 0; i < TIME_ROWS; ++i)
+        {
             t.setRowHeight(i, ROW_HEIGHT/2);
         }
-        for(int i = 1; i< WEEK_COLUMNS; ++i){
+
+        for (int i = 1; i< WEEK_COLUMNS; ++i)
+        {
             t.getColumnModel().getColumn(i).setPreferredWidth(COLUMN_WIDTH);;
         }
+
         t.getColumnModel().getColumn(0).setMinWidth(0);
         t.getColumnModel().getColumn(0).setMaxWidth(0);
         t.getColumnModel().getColumn(0).setWidth(0);
+
         return t;
     }
 
+    /**
+     * Creates a table to display the time.
+     * @return Table to display the time.
+     */
     private JTable timeTable(){
         TableModel model = new DefaultTableModel(TIME_ROWS,TIME_COLUMN);
-        for(int i = 1; i < 13; ++i){
+        for (int i = 1; i < 13; ++i)
+        {
             String s = " " + i + "am"; 
-            model.setValueAt(s, i, TIME_COLUMN-1);
+            model.setValueAt(s, i, TIME_COLUMN - 1);
         }
-        for(int i = 1; i < 12; ++i){
+
+        for (int i = 1; i < 12; ++i)
+        {
             String s = " " + i + "pm"; 
-            model.setValueAt(s, i+12, TIME_COLUMN-1);
+            model.setValueAt(s, i+12, TIME_COLUMN - 1);
         }
+
         JTable t = new JTable(model);
-        for(int i = 0; i < TIME_ROWS; ++i){
+        for (int i = 0; i < TIME_ROWS; ++i)
+        {
             t.setRowHeight(i, ROW_HEIGHT);
         }
+
         return t;
     }
 
+    /**
+     * Updates the table to display events.
+     */
     private void updateEventTable(){
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH)+1; 
         int day = calendar.get(Calendar.DATE);
 
-        if(tempDate[0] != day || tempDate[1] != month || tempDate[2] != year){
-            for(int i = 0; i < TIME_ROWS; ++i){
-                eventTableModel.setValueAt("", i, COLUMNS-2);
-                eventTableModel.setValueAt(0, i, COLUMNS-1);
+        if (tempDate[0] != day || tempDate[1] != month || tempDate[2] != year)
+        {
+            for (int i = 0; i < TIME_ROWS; ++i)
+            {
+                eventTableModel.setValueAt("", i, COLUMNS - 2);
+                eventTableModel.setValueAt(0, i, COLUMNS - 1);
             } 
             tempDate[0] = day;
             tempDate[1] = month;
@@ -150,12 +189,14 @@ public class WeekView extends JPanel implements ChangeListener{
         List<Event> eventList = model.getEventInSelectedView(year, month, day, year, month, day);
 
         int hiddenData = 1;
-        for(Event event : eventList){
-            int eventIndex = ((int)event.getStartHour()-1);
-            int hightlightIndex = ((int)event.getEndHour()-1);
-            eventTableModel.setValueAt(event.getName(), eventIndex, COLUMNS-2);
-            for(int i = eventIndex; i <= hightlightIndex; ++i){
-                eventTableModel.setValueAt(hiddenData, i, COLUMNS-1);
+        for (Event event: eventList)
+        {
+            int eventIndex = ((int)event.getStartHour() - 1);
+            int hightlightIndex = ((int)event.getEndHour() - 1);
+            eventTableModel.setValueAt(event.getName(), eventIndex, COLUMNS - 2);
+            for (int i = eventIndex; i <= hightlightIndex; ++i)
+            {
+                eventTableModel.setValueAt(hiddenData, i, COLUMNS - 1);
             }
             ++hiddenData;
         }
@@ -163,16 +204,21 @@ public class WeekView extends JPanel implements ChangeListener{
         DefaultTableModel tableModel = (DefaultTableModel) eventTable.getModel();
         tableModel.fireTableDataChanged();
 
-        for(int i = 0; i < TIME_ROWS; ++i){
+        for (int i = 0; i < TIME_ROWS; ++i)
+        {
             eventTable.setRowHeight(i, ROW_HEIGHT);
         }
     }
-    private void updateLabel(){
+    
+    /**
+     * Updates the label that displays the date.
+     */
+    private void updateLabel()
+    {
         DAYS[] arrayOfDays = DAYS.values();
         int day = calendar.get(Calendar.DATE);
         int dayofweek = calendar.get(Calendar.DAY_OF_WEEK);
         String s = arrayOfDays[dayofweek] + " " + Integer.toString(day);
         dateLabel.setText(s);
     }
-
 }

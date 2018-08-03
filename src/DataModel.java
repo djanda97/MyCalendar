@@ -3,67 +3,35 @@ import javax.swing.event.ChangeListener;
 import java.io.*;
 import java.util.*;
 
+/**
+ * This class functions as the model of the calendar application.
+ * Holds a GregorianCalendar object, a list of events, and a list of views.
+ */
 public class DataModel
 {
-    private List<Event> eventList;// *****to store events******
-    private BufferedReader br;
-    private Map<Integer, String> dayMap;//******to map recurring events*******
-    private ArrayList<ChangeListener> listeners;
     private GregorianCalendar cal;
-    
-
+    private ArrayList<ChangeListener> listeners;
+    private List<Event> eventList; // To store events
+    private Map<Integer, String> dayMap; // To map recurring events
+    private BufferedReader br;
     private int eventDay;
     private int eventMonth;
     private int eventYear;
 
-    public int getToday()
-    {
-        return Calendar.getInstance().get(Calendar.DATE);
-    }
-
-    public void setEventDay(int eventDay){
-        this.eventDay = eventDay;
-    }
-
-    public void setEventMonth(int eventMonth){
-        this.eventMonth = eventMonth;
-    }
-
-    public void setEventYear(int eventYear){
-        this.eventYear = eventYear;
-    }
-    
-    public void setCal(GregorianCalendar cal){
-        this.cal = cal;
-        update();
-    }
-    
-    public void setDay(int day){
-        this.cal.set(Calendar.DAY_OF_MONTH, day);
-        update();
-    }
-
-    public int getEventDay(){
-        return this.eventDay;
-    }
-
-    public int getEventMonth(){
-        return this.eventMonth;
-    }
-
-    public int getEventYear(){
-        return this.eventYear;
-    }
-
+    /**
+     * Constructor that initializes the GregorianCalendar object, list and map of events, and list of views.
+     */
     public DataModel()
     {
-        listeners = new ArrayList<>();
         cal = new GregorianCalendar();
+        listeners = new ArrayList<>();
         eventList = new ArrayList<>();
-        // *************creating Map to act as a dictionary so that when we read the 
-        // day from the file, we can map it back to cal.get(Calendar.DAY_OF_WEEK)
-        // this is only for recurring events because we are reading from file for recurring events only. 
-        // In recurring events each symbol is used to map the day to a event.***************
+        /**
+         * Creating Map to act as a dictionary so that when we read the 
+         * day from the file, we can map it back to cal.get(Calendar.DAY_OF_WEEK)
+         * this is only for recurring events because we are reading from file for recurring events only.
+         * In recurring events each symbol is used to map the day to a event.
+         */
         dayMap = new HashMap<>();
         dayMap.put(1, "S");
         dayMap.put(2, "M");
@@ -74,21 +42,121 @@ public class DataModel
         dayMap.put(7, "A");
     }
 
+    /**
+     * Gets the current day.
+     * @return The current day.
+     */
+    public int getToday()
+    {
+        return Calendar.getInstance().get(Calendar.DATE);
+    }
+
+    /**
+     * Sets the day of the event.
+     * @param eventDay Day of the event.
+     */
+    public void setEventDay(int eventDay)
+    {
+        this.eventDay = eventDay;
+    }
+
+    /**
+     * Sets the month of the event.
+     * @param eventMonth Month of the event.
+     */
+    public void setEventMonth(int eventMonth)
+    {
+        this.eventMonth = eventMonth;
+    }
+
+    /**
+     * Sets the year of the event.
+     * @param eventYear Year of the event.
+     */
+    public void setEventYear(int eventYear)
+    {
+        this.eventYear = eventYear;
+    }
+    
+    /**
+     * Sets the GregorianCalendar object.
+     * @param cal New GregorianCalendar to reference.
+     */
+    public void setCal(GregorianCalendar cal)
+    {
+        this.cal = cal;
+        update();
+    }
+    
+    /**
+     * Sets the current day.
+     * @param day Current day.
+     */
+    public void setDay(int day)
+    {
+        this.cal.set(Calendar.DAY_OF_MONTH, day);
+        update();
+    }
+
+    /**
+     * Gets the day of the event.
+     * @return Day of the event.
+     */
+    public int getEventDay()
+    {
+        return this.eventDay;
+    }
+
+    /**
+     * Gets the month of the event.
+     * @return Month of the event.
+     */
+    public int getEventMonth()
+    {
+        return this.eventMonth;
+    }
+
+    /**
+     * Gets the year of the event.
+     * @return Year of the event.
+     */
+    public int getEventYear()
+    {
+        return this.eventYear;
+    }
+
+    /**
+     * Gets the list of events.
+     * @return List of events.
+     */
     public List<Event> getEventList()
     {
         return eventList;
     }
 
+    /**
+     * Sets the list of events.
+     * @param eventList List of events.
+     */
     public void setEventList(List<Event> eventList)
     {
         this.eventList = eventList;
     }
     
-    // *********Overloaded function to create single event without endHour*********
+    /**
+     * Overloaded function to create single event without endHour.
+     * @param name Name of the event.
+     * @param year Year of the event.
+     * @param startMonth Start month of the event.
+     * @param day Day of the event.
+     * @param startHour Start hour of the event.
+     */
     public boolean createEvent(String name, int year, int startMonth,
-			int day, int startHour) {
+            int day, int startHour)
+    {
 		Event e = new Event(name, year, startMonth, day, startHour);
-		if(checkConflict(e)) {
+        if(checkConflict(e))
+        {
 			eventList.add(e);
             update();
 			return true;
@@ -97,7 +165,15 @@ public class DataModel
 		return false;
 	}
 
-    //*********** Overloaded function to create single event with endHour**********
+    /**
+     * Overloaded function to create single event with endHour.
+     * @param name Name of the event.
+     * @param year Year of the event.
+     * @param startMonth Start month of the event.
+     * @param day Day of the event.
+     * @param startHour Start hour of the event.
+     * @param endHour End hour of the event.
+     */
     public boolean createEvent(String name, int year, int startMonth,
                                int day, int startHour, int endHour)
     {
@@ -112,7 +188,16 @@ public class DataModel
         return false;
     }
 
-    //********** Overloaded function to create recurring event***************
+    /**
+     * Overloaded function to create recurring event.
+     * @param name Name of the event.
+     * @param year Year of the event.
+     * @param startMonth Start month of the event.
+     * @param endMonth End month of the event.
+     * @param day Day of the event.
+     * @param startHour Start hour of the event.
+     * @param endHour End hour of the event.
+     */
     public boolean createEvent(String name, int year, int startMonth, int endMonth,
                                int day, int startHour, int endHour)
     {
@@ -127,9 +212,13 @@ public class DataModel
         return false;
     }
 
+    /**
+     * Checks for a time conflict between events.
+     * @return True if there is no conflict. False otherwise.
+     */
     private boolean checkConflict(Event e)
     {
-        for (Event event : eventList)
+        for (Event event: eventList)
         {
             if (event.getYear() == e.getYear()
                     && event.getStartMonth() == e.getStartMonth()
@@ -152,50 +241,57 @@ public class DataModel
         return true;
     }
 
+    /**
+     * Sorts the list of events using Comparator.
+     */
     public void sortEvent()
     {
-	Comparator<Event> eventComparator = (e1, e2) ->
-    {
-        if (e1.getYear() > e2.getYear())
+        Comparator<Event> eventComparator = (e1, e2) ->
         {
-            return 1;
-         }
-         if (e1.getYear() < e2.getYear())
-         {
-             return -1;
-         }
-         if (e1.getStartMonth() > e2.getStartMonth())
-         {
-             return 1;
-         }
-         if (e1.getStartMonth() < e2.getStartMonth())
-         {
-             return -1;
-         }
-         if (e1.getDay() > e2.getDay())
-         {
-             return 1;
-         }
-         if (e1.getDay() < e2.getDay())
-         {
-             return -1;
-         }
-         if (e1.getStartHour() > e2.getStartHour())
-         {
-             return 1;
-         }
-         if (e1.getStartHour() < e2.getStartHour())
-         {
-             return -1;
-         }
-         return 0;
-     };
-     eventList.sort(eventComparator);
-  }
-    // *********read from file function*********
+            if (e1.getYear() > e2.getYear())
+            {
+                return 1;
+            }
+            if (e1.getYear() < e2.getYear())
+            {
+                return -1;
+            }
+            if (e1.getStartMonth() > e2.getStartMonth())
+            {
+                return 1;
+            }
+            if (e1.getStartMonth() < e2.getStartMonth())
+            {
+                return -1;
+            }
+            if (e1.getDay() > e2.getDay())
+            {
+                return 1;
+            }
+            if (e1.getDay() < e2.getDay())
+            {
+                return -1;
+            }
+            if (e1.getStartHour() > e2.getStartHour())
+            {
+                return 1;
+            }
+            if (e1.getStartHour() < e2.getStartHour())
+            {
+                return -1;
+            }
+            return 0;
+        };
+        eventList.sort(eventComparator);
+    }
+
+    /**
+     * Reads a file to retrieve information about recurring events.
+     * @param filePath Path to the file that is going to be read.
+     * @return True if the file was successfully read. False otherwise.
+     */
     public boolean readFromFile(String filePath)
     {
-        //filePath = "input.txt";
         File file = new File(filePath);
         try
         {
@@ -228,16 +324,17 @@ public class DataModel
             }
         } catch (FileNotFoundException e)
         {
-            //e.printStackTrace();
             return false;
         } catch (IOException e)
         {
-            //e.printStackTrace();
             return false;
         }
         return true;
     }
     
+    /**
+     * Prints all the events in the list.
+     */
     public void printEventList()
     {
         for (Event e : eventList)
@@ -246,111 +343,173 @@ public class DataModel
         }
     }
     
+    /**
+     * Prints the size of the list of events.
+     */
     public void printEventListSize()
     {
     	System.out.println(eventList.size());
     }
 
+    /**
+     * Gets the GregorianCalendar object used in this model.
+     * @return GregorianCalendar object.
+     */
     public GregorianCalendar getCal()
     {
         return cal;
     }
 
+    /**
+     * Gets the number of days in the current month.
+     * @return Number of days in the current month.
+     */
     public int getMonthDays()
     {
         return cal.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
 
+    /**
+     * Gets the current month (zero-indexed).
+     * @return Current month.
+     */
     public int getCurrentMonth()
     {
         return cal.get(Calendar.MONTH);
     }
 
+    /**
+     * Gets the current year.
+     * @return Current year.
+     */
     public int getCurrentYear()
     {
         return cal.get(Calendar.YEAR);
     }
 
+    /**
+     * Gets the current day.
+     * @return Current day.
+     */
     public int getCurrentDay()
     {
         return cal.get(Calendar.DATE);
     }
     
-    public void nextDay() {
+    /**
+     * Increases the current day by one.
+     */
+    public void nextDay()
+    {
     	cal.add(Calendar.DATE, 1);
     	update();
     }
     
-    public void nextMonth() {
+    /**
+     * Increases the current month by one.
+     */
+    public void nextMonth()
+    {
     	cal.add(Calendar.MONTH, 1);
     	update();
     }
     
-    public void prevDay() {
+    /**
+     * Decreases the current day by one.
+     */
+    public void prevDay()
+    {
     	cal.add(Calendar.DATE, -1);
     	update();
     }
     
-    public void prevMonth() {
+    /**
+     * Decreases the current month by one.
+     */
+    public void prevMonth()
+    {
     	cal.add(Calendar.MONTH, -1);
     	update();
     }
 
-    // Mutator
+    /**
+     * Nofities the views of any changes in the model.
+     */
     public void update()
     {
-        for (ChangeListener l : listeners)
+        for (ChangeListener l: listeners)
         {
             l.stateChanged(new ChangeEvent(this));
         }
     }
 
-    // Attach
+    /**
+     * Attachs a view to the model.
+     * @param listener View.
+     */
     public void attach(ChangeListener listener)
     {
         listeners.add(listener);
     }
 
-    // ************Override function to get all the events in the given viewType
-    // only for day, week and month***************
-    public List<Event> getEventInSelectedView(String viewType) {
+    /**
+     * Overridden function to get all the events in the given view type.
+     * @param viewType Day, week, or month.
+     * @return List of events for the selected view type.
+     */
+    public List<Event> getEventInSelectedView(String viewType)
+    {
     	sortEvent();
-    	List<Event> eventListInSelectedView = new ArrayList<Event>();
+    	List<Event> eventListInSelectedView = new ArrayList<>();
     	
-    	// checks if view type is day
-    	if("day".equalsIgnoreCase(viewType)) {
-	    	for(Event e: eventList) {
+    	// Checks if view type is day
+        if(viewType.equalsIgnoreCase("day"))
+        {
+            for(Event e: eventList)
+            {
 	    		if(e.getYear() == getCurrentYear()
 	    				&& e.getStartMonth() == (getCurrentMonth() + 1)
-	    				&& e.getDay() == getCurrentDay()) {
-	    			eventListInSelectedView.add(e);// adds event in the viewtype
+                        && e.getDay() == getCurrentDay())
+                {
+	    			eventListInSelectedView.add(e); // Adds event in the view type
 	    		}
 	    	}
-	    //checks if viewtype is month
-    	} else if("month".equalsIgnoreCase(viewType)) {
-    		for(Event e: eventList) {
+	    // Checks if view type is month
+        }
+        else if(viewType.equalsIgnoreCase("month"))
+        {
+            for(Event e: eventList)
+            {
 	    		if(e.getYear() == getCurrentYear()
-	    				&& e.getStartMonth() == (getCurrentMonth() + 1)) {
+                        && e.getStartMonth() == (getCurrentMonth() + 1))
+                {
 	    			eventListInSelectedView.add(e);
 	    		}
 	    	}
+    	// Checks if the view type is week view
+        }
+        else if(viewType.equalsIgnoreCase("week"))
+        {
+    		int weekLowerThreshold = getCal().get(Calendar.DAY_OF_WEEK) - 1; // The first day of the week
+    		int weekUpperThreshold = 7 - getCal().get(Calendar.DAY_OF_WEEK); // The last day of the week
     		
-    	//checks if the viewtype is week view
-    	} else if("week".equalsIgnoreCase(viewType)) {
-    		int weekLowerThreshold = getCal().get(Calendar.DAY_OF_WEEK) - 1;//****** the first day of the week******
-    		int weekUpperThreshold = 7 - getCal().get(Calendar.DAY_OF_WEEK);//****** the last day of the week*******
-    		
-    		for(Event e: eventList) {
+            for(Event e: eventList)
+            {
     			GregorianCalendar eventCal = new GregorianCalendar(e.getYear(), (e.getStartMonth() - 1), e.getDay());
     			
-    			// the time difference
+    			// The time difference
     			double diff = (1.0 * getCal().getTimeInMillis() - eventCal.getTimeInMillis()) / (1000 * 60 * 60 * 24);
 
-    			if(diff < 0 && Math.abs(diff) < weekUpperThreshold) {
+                if(diff < 0 && Math.abs(diff) < weekUpperThreshold)
+                {
     				eventListInSelectedView.add(e);
-    			} else if(diff > 0 && diff <= weekLowerThreshold) {
+                }
+                else if(diff > 0 && diff <= weekLowerThreshold)
+                {
     				eventListInSelectedView.add(e);
-    			} else if (diff == 0) {
+                }
+                else if (diff == 0)
+                {
     				eventListInSelectedView.add(e);
     			}
 	    	}
@@ -359,31 +518,40 @@ public class DataModel
     }
     
     /**
-     *  Override function to get all the events in the given date range
-     *  For Agenda view type
-     * @param startYear
-     * @param startMonth
-     * @param startDay
-     * @param endYear
-     * @param endMonth
-     * @param endDay
-     * @return list of events which fall under the Agenda start and end date
+     * Overridden function to get all the events in the given date range.
+     * For Agenda view type
+     * @param startYear Start year of the events.
+     * @param startMonth Start month of the events.
+     * @param startDay Start day of the events.
+     * @param endYear End year of the events.
+     * @param endMonth End month of the events.
+     * @param endDay End day of the events.
+     * @return List of events which fall under the Agenda start and end date.
      */
     public List<Event> getEventInSelectedView(int startYear, int startMonth, int startDay,
-    		int endYear, int endMonth, int endDay) {
+            int endYear, int endMonth, int endDay)
+    {
     	sortEvent();
-    	List<Event> eventListInSelectedView = new ArrayList<Event>();
-    	for(Event e: eventList) {
+        List<Event> eventListInSelectedView = new ArrayList<Event>();
+        
+        for(Event e: eventList)
+        {
     		if(e.getYear() >= startYear && e.getYear() <= endYear
     				&& e.getStartMonth() >= startMonth && e.getStartMonth() <= endMonth
-    				&& e.getDay() >= startDay && e.getDay() <= endDay) {
+                    && e.getDay() >= startDay && e.getDay() <= endDay)
+            {
     			eventListInSelectedView.add(e);
     		}
     	}
     	return eventListInSelectedView;
     }
     
-    public boolean isToday() {
+    /**
+     * Checks to see if the date in the GregorianCalendar is the same as the current date.
+     * @return True if the dates are the same. False otherwise.
+     */
+    public boolean isToday()
+    {
     	GregorianCalendar today = new GregorianCalendar();
     	return getCurrentYear() == today.get(Calendar.YEAR)
     			&& getCurrentMonth() == today.get(Calendar.MONTH)

@@ -1,12 +1,14 @@
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
 import java.awt.*;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+/**
+ * This class functions as the main view for the calendar application.
+ */
 public class CalendarView extends JFrame implements ChangeListener
 {
     private static final int DEFAULT_WIDTH = 900;
@@ -15,24 +17,25 @@ public class CalendarView extends JFrame implements ChangeListener
     private final static int TEXT_COLUMN = 55;
     private final static int MAX_DAY_BUTTONS = 42;
     private DataModel model;
+    private DayView dayView;
+    private WeekView weekView;
     private List<Event> eventList;
     private JTextArea textArea;
     private JButton[] dayButton;
-    private String[] months = {"January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"};
-    private String[] days = {"Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"};
+    private String[] months = { "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December" };
+    private String[] days = { "Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat" };
 
-    private DayView dayView;
-    private WeekView weekView;
-
+    /**
+     * Constructor that sets up the view.
+     * @param m DataModel object used by the view.
+     */
     public CalendarView(DataModel m)
     {
-//        eventList = new ArrayList<>();
-        this.model = m;
-
+        model = m;
         dayView = new DayView(model);
         weekView = new WeekView(model);
-        model.attach(weekView);
+        model.attach(dayView);
         model.attach(weekView);
 
         this.setTitle("Calendar");
@@ -42,9 +45,12 @@ public class CalendarView extends JFrame implements ChangeListener
         this.createRightPanel();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
-        
     }
 
+    /**
+     * Calls methods from the model to change the current day depending on input.
+     * @param option Prev or next indicating previous or next day.
+     */
     private void changeDay(String option)
     {
         if (option.equalsIgnoreCase("prev"))
@@ -57,6 +63,10 @@ public class CalendarView extends JFrame implements ChangeListener
         }
     }
 
+    /**
+     * Calls methods from model to change the current month depending on input.
+     * @param option Prev or next indicating previous or next month.
+     */
     private void changeMonth(String option)
     {
         if (option.equalsIgnoreCase("prev"))
@@ -69,6 +79,15 @@ public class CalendarView extends JFrame implements ChangeListener
         }
     }
 
+    /**
+     * Creates the left panel which includes:
+     *      Today button,
+     *      Previous and next day buttons,
+     *      Create button,
+     *      Text area that displays the current month and year,
+     *      Labels that indicate the days of the week,
+     *      Buttons for each day of the month.
+     */
     private void createLeftPanel()
     {
         JPanel leftButtonPanel = new JPanel();
@@ -146,26 +165,19 @@ public class CalendarView extends JFrame implements ChangeListener
             if (input != JOptionPane.CLOSED_OPTION)
             {
                 String eventTitle = textFieldEventTitle.getText();
-                String date = textFieldDate.getText();            // specially, if the user did not enter anything, it means current button's date
+                String date = textFieldDate.getText(); // Specially, if the user did not enter anything it means current button's date.
                 String startingTime = textFieldStartingTime.getText();
                 String endingTime = textFieldEndingTime.getText();
 
-
-                // for date, 1. if the user didn't enter anything, get the current button's date.
                 if (date.equals(""))
                 {
-                    // this need to go to the for loop when generate the days.
-                    // *************************************************************************
-                    // this needs to get the current day's date from the current button's date.
                     System.out.println("no date");
-
                 }
 
                 int theDay = 0;
                 int theMonth = 0;
                 int theYear = 0;
 
-                // for date, 2. if the user enter the date, then parse the date into day, month, and year.
                 if (!date.equals(""))
                 {
                 	theMonth = Integer.parseInt(date.substring(0, 2));
@@ -187,7 +199,7 @@ public class CalendarView extends JFrame implements ChangeListener
                     int endingHour = Integer.parseInt(endingTime);
                     System.out.println(startingHour);
                     System.out.println(endingHour);
-                    // ******************************************* Controller **********************************
+                    // Controller
                     if(!model.createEvent(eventTitle, theYear, theMonth, theDay, startingHour, endingHour)) {
                     	JOptionPane.showMessageDialog(null, "Conflicting event found! Event not created. Please try again with a different time.",
                     			"Event Info", JOptionPane.WARNING_MESSAGE);
@@ -204,7 +216,7 @@ public class CalendarView extends JFrame implements ChangeListener
         leftButtonPanel.add(buttonNextDay);
         leftButtonPanel.add(buttonCreate);
 
-        // month and year: July 2018
+
         JPanel textPanel = new JPanel();
         textPanel.setLayout(new FlowLayout());
         textArea = new JTextArea();
@@ -241,37 +253,32 @@ public class CalendarView extends JFrame implements ChangeListener
         JPanel daysPanel = new JPanel();
         daysPanel.setLayout(new GridLayout(0, DAYS_IN_WEEK));
         
+        // Initialize dayButton
         dayButton = new JButton[MAX_DAY_BUTTONS];
-        //init dayButton
-        for(int i = 0; i < MAX_DAY_BUTTONS; i++) {
+        for (int i = 0; i < MAX_DAY_BUTTONS; i++)
+        {
         	dayButton[i] = new JButton();
         	dayButton[i].setPreferredSize(new Dimension(50, 50));
         }
         updateDayButtons();
        
         
-        for(int i = 0; i < MAX_DAY_BUTTONS; i++) {
-        	// add action listener to the buttons
-        	final int day = Integer.parseInt(dayButton[i].getText());
+        for (int i = 0; i < MAX_DAY_BUTTONS; i++)
+        {
+            final int day = Integer.parseInt(dayButton[i].getText());
+            // Add action listener to the buttons
             dayButton[i].addActionListener(event ->
             {
             	model.setDay(day);
             	eventList = model.getEventInSelectedView("day");
                 updateDayButtons();
-
-                // update the event day, month, year for eventPanel to use.
-
-                // ****************************************************************
-                // wanted to get the data so that can save it to dataModel and change on EventPanel.
-                // but it is final, cannot do that
-//                int clickedDay = i;
-
-                //  shows the events on that day on DayView panel, go to method
             });
         	
             // Add button to daysPanel
             if(dayButton[i] != null)
-        		daysPanel.add(dayButton[i]);
+            {
+                daysPanel.add(dayButton[i]);
+            }
         }
 
         leftPanel.add(leftButtonPanel);
@@ -282,20 +289,26 @@ public class CalendarView extends JFrame implements ChangeListener
         this.add(leftPanel, BorderLayout.WEST);
     }
     
+    /**
+     * Updates the orientation of the day buttons to reflect the current month and year.
+     */
     private void updateDayButtons()
     {
     	GregorianCalendar temp = new GregorianCalendar(model.getCurrentYear(), model.getCurrentMonth(), 1);
     	int k = temp.get(Calendar.DAY_OF_WEEK);
     	int dayButtonIndex = 0;
     	temp.add(Calendar.DATE, -1);
-    	int prevDay = temp.get(Calendar.DAY_OF_MONTH) - k + 1;
-	    for(; dayButtonIndex < k - 1 ; dayButtonIndex++) {
+        int prevDay = temp.get(Calendar.DAY_OF_MONTH) - k + 1;
+        
+        for (; dayButtonIndex < k - 1 ; dayButtonIndex++)
+        {
 	    	dayButton[dayButtonIndex].setText(String.valueOf(prevDay++));
 	    	dayButton[dayButtonIndex].setBackground(null);
             dayButton[dayButtonIndex].setOpaque(false);
             dayButton[dayButtonIndex].setBorderPainted(true);
 	    	dayButton[dayButtonIndex].setEnabled(false);
-	    }
+        }
+        
     	for (int i = 0; i < model.getMonthDays(); i++, dayButtonIndex++)
         {
             dayButton[dayButtonIndex].setText(String.valueOf(i+1));
@@ -319,15 +332,26 @@ public class CalendarView extends JFrame implements ChangeListener
             }
         }
     	
-    	for(int d = 0; dayButtonIndex < MAX_DAY_BUTTONS; d++, dayButtonIndex++) {
+        for (int d = 0; dayButtonIndex < MAX_DAY_BUTTONS; d++, dayButtonIndex++)
+        {
     		dayButton[dayButtonIndex].setText(String.valueOf(d+1));
     		dayButton[dayButtonIndex].setEnabled(false);
-    	}
+        }
+        
     	int month = model.getCurrentMonth(); 
     	textArea.setText(String.valueOf(months[month]) + " ");
         textArea.append(String.valueOf(model.getCurrentYear()) + "\n\n");
     }
 
+    /**
+     * Creates the right panels which includes:
+     *      Day button,
+     *      Week button,
+     *      Month button,
+     *      Agenda button,
+     *      From File button,
+     *      DayView.
+     */
     private void createRightPanel()
     {
         JPanel rightPanel = new JPanel();
@@ -352,8 +376,6 @@ public class CalendarView extends JFrame implements ChangeListener
 
         buttonDay.addActionListener(event ->
         {
-            // call get day method
-            // model.goto method.
         	eventList = model.getEventInSelectedView("day");
             System.out.println(eventList.toString());
             weekView.setVisible(false);
@@ -364,7 +386,7 @@ public class CalendarView extends JFrame implements ChangeListener
 
         buttonWeek.addActionListener(event ->
         {
-            eventList = model.getEventInSelectedView("week");
+        	eventList = model.getEventInSelectedView("week");
             dayView.setVisible(false);
             rightPanel.remove(1);
             rightPanel.add(weekView, BorderLayout.CENTER);
@@ -384,7 +406,7 @@ public class CalendarView extends JFrame implements ChangeListener
 
             JPanel myPanel = new JPanel();
 
-            // ask user input
+            // Ask user input
             myPanel.add(new JLabel("Starting date: (DD/MM/YYYY)"));
             myPanel.add(textFieldStartingDate);
             myPanel.add(Box.createVerticalStrut(15));
@@ -397,7 +419,6 @@ public class CalendarView extends JFrame implements ChangeListener
             String startingDate = textFieldStartingDate.getText();
             String endingDate = textFieldEndingDate.getText();
 
-            // if 1. if the user didn't enter anything, do not do anything
             if (startingDate.equals("") || endingDate.equals(""))
             {
                 System.out.println("no time period entered");
@@ -411,7 +432,6 @@ public class CalendarView extends JFrame implements ChangeListener
             int endingMonth = 0;
             int endingYear = 0;
 
-            // if 2. if the user enter the date, then parse the date into day, month, and year.
             if (!((startingDate.equals("") || endingDate.equals(""))))
             {
                 startingDay = Integer.parseInt(startingDate.substring(0, 2));
@@ -429,37 +449,20 @@ public class CalendarView extends JFrame implements ChangeListener
                 System.out.println(endingDay);
                 System.out.println(endingMonth);
                 System.out.println(endingYear);
-            }            
+            }
+
             eventList = model.getEventInSelectedView(startingYear, startingMonth, startingDay,
             		endingYear, endingMonth, endingDay);
 
             System.out.println(eventList.toString());
-
-                // ?????????????????????????????????????? current code the event title and time are missing
-            
-
-            // situation 1:
-            // if different months, 1/12 - 2/12 get the starting day to the end of the starting month, loop through each day,
-            // get the ending day to the end of the ending month, loop through each day.
-
-            // situation 2:
-            // if different months, 1/12 - 5/12 but with other whole months inside, in addition to situation 1,
-            // loop through the months in between
-
-            // situation 3:
-            // if different years, look through the month -- same with situation 2.
-
-
-
         });
 
         buttonFromFile.addActionListener(event ->
         {
         	JTextField textFieldFilePath = new JTextField( 25);
-
             JPanel myPanel = new JPanel();
             
-            // ask user input
+            // Ask user input
             myPanel.add(new JLabel("File path:"));
             myPanel.add(textFieldFilePath);
             myPanel.add(Box.createHorizontalStrut(50));
@@ -468,21 +471,29 @@ public class CalendarView extends JFrame implements ChangeListener
                 "Please enter file path to read from \n", JOptionPane.OK_CANCEL_OPTION);
 
             String filePath = textFieldFilePath.getText();
-        	//model.readFromFile("/Users/arnabsarkar/Desktop/input.txt");
             
-            if(!model.readFromFile(filePath)) {
+            if (!model.readFromFile(filePath))
+            {
             	JOptionPane.showMessageDialog(null, "Error reading file",
             			"File Read Info", JOptionPane.WARNING_MESSAGE);
-            } else {
+            }
+            else
+            {
             	JOptionPane.showMessageDialog(null, "Done reading from file",
             			"File Read Info", JOptionPane.INFORMATION_MESSAGE);
             }
+
         	model.printEventList();
         });
+
         rightPanel.add(dayView, BorderLayout.CENTER);
         this.add(rightPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * Called when the model is updated.
+     * @param e ChangeEvent.
+     */
     public void stateChanged(ChangeEvent e)
     {
     	updateDayButtons();
