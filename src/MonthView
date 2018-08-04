@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
@@ -55,13 +56,17 @@ public class MonthView extends JPanel implements ChangeListener, View {
     @Override
     public void stateChanged(ChangeEvent event){
         updateLabel();
+        eventTable = createEventTable();
         updateEventTable();   
     }
 
     @Override
     public JTable createEventTable(){
+    	
+    	int daysInMonth = model.getMonthDays() + 1;
+    	
         for(int i = 0; i < TIME_ROWS; ++i){
-            for(int j = 0; j < MONTH_COLUMNS; ++j){
+            for(int j = 0; j < daysInMonth; ++j){
             	if(i == 0) {
             		eventTableModel.setValueAt(j, i, j);
             	} else {
@@ -69,6 +74,7 @@ public class MonthView extends JPanel implements ChangeListener, View {
             	}
             }
         }
+
         JTable t = new JTable(eventTableModel){
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column)
             {
@@ -106,9 +112,11 @@ public class MonthView extends JPanel implements ChangeListener, View {
         for(int i = 0; i < TIME_ROWS; ++i){
             t.setRowHeight(i, ROW_HEIGHT/2);
         }
-        for(int i = 1; i< MONTH_COLUMNS; ++i){
-            t.getColumnModel().getColumn(i).setPreferredWidth(COLUMN_WIDTH);;
+
+        for(int i = 1; i < daysInMonth; ++i){
+            t.getColumnModel().getColumn(i).setPreferredWidth(COLUMN_WIDTH);
         }
+       
         t.getColumnModel().getColumn(0).setMinWidth(0);
         t.getColumnModel().getColumn(0).setMaxWidth(0);
         t.getColumnModel().getColumn(0).setWidth(0);
@@ -136,7 +144,6 @@ public class MonthView extends JPanel implements ChangeListener, View {
     @Override
     public void updateEventTable(){
         List<Event> eventList = model.getEventInSelectedView("month");
-
         int hiddenData = 1;
         for(Event event : eventList){
             int eventIndex = (int) event.getStartHour();
