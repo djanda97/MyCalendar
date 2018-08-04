@@ -42,11 +42,11 @@ public class CalendarView extends JFrame implements ChangeListener
         model.attach(monthView);
 
         this.setTitle("Calendar");
-        this.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         this.setLayout(new BorderLayout());
         this.createLeftPanel();
         this.createRightPanel();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setVisible(true);
     }
 
