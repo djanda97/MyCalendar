@@ -103,7 +103,8 @@ public class CalendarView extends JFrame implements ChangeListener
         JButton buttonToday = new JButton("Today");
         buttonToday.addActionListener(event ->
         {
-            model.setCal(new GregorianCalendar());
+            model.setDay(model.getToday());
+            model.setMonth(model.getMonth());
         });
 
         JButton buttonPrevDay = new JButton("<");
