@@ -1,3 +1,7 @@
+/**
+ * DataModel.java
+ * @author Team 9: Parnika De, Viet Dinh, Sijia Gao, and David Janda
+ */
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.io.*;

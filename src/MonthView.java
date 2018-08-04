@@ -1,3 +1,7 @@
+/**
+ * MonthView.java
+ * @author Team 9: Parnika De, Viet Dinh, Sijia Gao, and David Janda
+ */
 import java.awt.*;
 import java.util.*;
 import java.util.List;
