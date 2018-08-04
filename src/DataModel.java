@@ -329,6 +329,7 @@ public class DataModel
         {
             return false;
         }
+        update();
         return true;
     }
     
