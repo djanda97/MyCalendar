@@ -68,9 +68,9 @@ public class MonthView extends JPanel implements ChangeListener, View {
         for(int i = 0; i < TIME_ROWS; ++i){
             for(int j = 0; j < daysInMonth; ++j){
             	if(i == 0) {
-            		eventTableModel.setValueAt(j, i, j);
+            		eventTableModel.setValueAt("" + j, i, j);
             	} else {
-            		eventTableModel.setValueAt(0, i, j);
+            		eventTableModel.setValueAt("" + 0, i, j);
             	}
             }
         }
@@ -79,29 +79,30 @@ public class MonthView extends JPanel implements ChangeListener, View {
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column)
             {
                 Component c = super.prepareRenderer(renderer, row, column);
-
+                	System.out.println(column);
                     if(!isRowSelected(row)){
                         c.setBackground(getBackground());
                         int modelRow = convertRowIndexToModel(row);
-                        int data = (int)getModel().getValueAt(modelRow, COLUMNS-2);
-                        if(data == 1) c.setBackground(Color.YELLOW);
-                        if(data == 2) c.setBackground(new Color(176,224,230));
-                        if(data == 3) c.setBackground(Color.RED);
-                        if(data == 4) c.setBackground(Color.PINK);
-                        if(data == 5) c.setBackground(Color.ORANGE);
-                        if(data == 6) c.setBackground(Color.MAGENTA);
-                        if(data == 7) c.setBackground(Color.LIGHT_GRAY);
-                        if(data == 8) c.setBackground(Color.GREEN);
-                        if(data == 9) c.setBackground(new Color(128, 0, 128));
-                        if(data == 10) c.setBackground(new Color(0, 128, 128));
-                        if(data == 11) c.setBackground(new Color(152,251,152));
-                        if(data == 12) c.setBackground(new Color(128, 128, 0));
-                        if(data == 13) c.setBackground(new Color(128, 0, 0));
-                        if(data == 14) c.setBackground(new Color(192, 192, 192));
-                        if(data == 15) c.setBackground(new Color(0, 255, 255));
-                        if(data == 16) c.setBackground(new Color(255, 215, 0));
-                        if(data == 17) c.setBackground(new Color(255, 127, 0));
-                        if(data == 18) c.setBackground(new Color(210, 105, 30));
+                        String hiddenData = (String)getModel().getValueAt(modelRow, COLUMNS-2);
+                        String[] data = hiddenData.split("-");
+                        if("1".equals(data[0]) && column == Integer.parseInt(data[1])) c.setBackground(Color.YELLOW);
+                        if("2".equals(data[0]) && column == Integer.parseInt(data[1])) c.setBackground(new Color(176,224,230));
+                        if("3".equals(data[0]) && column == Integer.parseInt(data[1])) c.setBackground(Color.RED);
+                        if("4".equals(data[0]) && column == Integer.parseInt(data[1])) c.setBackground(Color.PINK);
+                        if("5".equals(data[0]) && column == Integer.parseInt(data[1])) c.setBackground(Color.ORANGE);
+                        if("6".equals(data[0]) && column == Integer.parseInt(data[1])) c.setBackground(Color.MAGENTA);
+                        if("7".equals(data[0]) && column == Integer.parseInt(data[1])) c.setBackground(Color.LIGHT_GRAY);
+                        if("8".equals(data[0]) && column == Integer.parseInt(data[1])) c.setBackground(Color.GREEN);
+                        if("9".equals(data[0]) && column == Integer.parseInt(data[1])) c.setBackground(new Color(128, 0, 128));
+                        if("10".equals(data[0]) && column == Integer.parseInt(data[1])) c.setBackground(new Color(0, 128, 128));
+                        if("11".equals(data[0]) && column == Integer.parseInt(data[1])) c.setBackground(new Color(152,251,152));
+                        if("12".equals(data[0]) && column == Integer.parseInt(data[1])) c.setBackground(new Color(128, 128, 0));
+                        if("13".equals(data[0]) && column == Integer.parseInt(data[1])) c.setBackground(new Color(128, 0, 0));
+                        if("14".equals(data[0]) && column == Integer.parseInt(data[1])) c.setBackground(new Color(192, 192, 192));
+                        if("15".equals(data[0]) && column == Integer.parseInt(data[1])) c.setBackground(new Color(0, 255, 255));
+                        if("16".equals(data[0]) && column == Integer.parseInt(data[1])) c.setBackground(new Color(255, 215, 0));
+                        if("17".equals(data[0]) && column == Integer.parseInt(data[1])) c.setBackground(new Color(255, 127, 0));
+                        if("18".equals(data[0]) && column == Integer.parseInt(data[1])) c.setBackground(new Color(210, 105, 30));
 
                     }
 
@@ -151,7 +152,7 @@ public class MonthView extends JPanel implements ChangeListener, View {
             int eventColumn = event.getDay() - 1;
             eventTableModel.setValueAt(event.getName(), eventIndex, eventColumn + COLUMNS - 1);
             for(int i = eventIndex; i <= hightlightIndex; ++i){
-                eventTableModel.setValueAt(hiddenData, i, COLUMNS - 2);
+                eventTableModel.setValueAt(hiddenData + "-" + (eventColumn + COLUMNS - 1), i, COLUMNS - 2);
             }
             ++hiddenData;
         }
