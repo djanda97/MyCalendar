@@ -24,6 +24,7 @@ public class CalendarView extends JFrame implements ChangeListener
     private DayView dayView;
     private WeekView weekView;
     private MonthView monthView;
+    private ViewContext viewContext;
     private List<Event> eventList;
     private JTextArea textArea;
     private JButton[] dayButton;
@@ -38,9 +39,13 @@ public class CalendarView extends JFrame implements ChangeListener
     public CalendarView(DataModel m)
     {
         model = m;
-        dayView = new DayView(model);
-        weekView = new WeekView(model);
-        monthView = new MonthView(model);
+        // Get the different View Strategies
+        viewContext = new ViewContext(new DayView(model));
+        dayView = (DayView) viewContext.getView();
+        viewContext = new ViewContext(new WeekView(model));
+        weekView = (WeekView) viewContext.getView();
+        viewContext = new ViewContext(new MonthView(model));
+        monthView = (MonthView) viewContext.getView();
         model.attach(dayView);
         model.attach(weekView);
         model.attach(monthView);
