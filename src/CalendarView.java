@@ -273,10 +273,11 @@ public class CalendarView extends JFrame implements ChangeListener
         
         for (int i = 0; i < MAX_DAY_BUTTONS; i++)
         {
-            final int day = Integer.parseInt(dayButton[i].getText());
             // Add action listener to the buttons
+        	final int index = i;
             dayButton[i].addActionListener(event ->
             {
+            	int day = Integer.parseInt(dayButton[index].getText());
             	model.setDay(day);
             	eventList = model.getEventInSelectedView("day");
                 updateDayButtons();
