@@ -10,6 +10,7 @@ public class MyCalendarTester
      * Main function.
      * Creates a DataModel object and CalendarView object.
      * Attachs the view to the model.
+     * It takes a few seconds to read events from a file.
      * @param args Command-line arguments (not used).
      */
     public static void main(String[] args)
