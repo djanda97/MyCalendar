@@ -545,7 +545,7 @@ public class CalendarView extends JFrame implements ChangeListener
             			"File Read Info", JOptionPane.INFORMATION_MESSAGE);
             }
 
-        	model.printEventList();
+        	//model.printEventList();
         });
 
         rightPanel.add(dayView, BorderLayout.CENTER);
