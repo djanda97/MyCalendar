@@ -1,7 +1,3 @@
-/**
- * DayView.java
- * @author Team 9: Parnika De, Viet Dinh, Sijia Gao, and David Janda
- */
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -31,7 +27,7 @@ public class DayView extends JPanel implements ChangeListener, View
     private static final int TIME_ROWS = 23;
     private static final int TIME_COLUMN = 1;
     private static final int COLUMN = 2;
-    private static final int ROW_HEIGHT = 64;
+    private static final int ROW_HEIGHT = 38;
     private TableModel eventTableModel;
     private JLabel dateLabel;
     private JTable eventTable;
