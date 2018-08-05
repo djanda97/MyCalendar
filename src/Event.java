@@ -1,4 +1,9 @@
 /**
+ * Event.java
+ * @author Team 9: Parnika De, Viet Dinh, Sijia Gao, and David Janda
+ */
+
+/**
  * This class describes a calendar event.
  */
 public class Event

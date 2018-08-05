@@ -1,3 +1,7 @@
+/**
+ * CalendarView.java
+ * @author Team 9: Parnika De, Viet Dinh, Sijia Gao, and David Janda
+ */
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -20,6 +24,7 @@ public class CalendarView extends JFrame implements ChangeListener
     private DayView dayView;
     private WeekView weekView;
     private MonthView monthView;
+    private ViewContext viewContext;
     private List<Event> eventList;
     private JTextArea textArea;
     private JButton[] dayButton;
@@ -34,19 +39,23 @@ public class CalendarView extends JFrame implements ChangeListener
     public CalendarView(DataModel m)
     {
         model = m;
-        dayView = new DayView(model);
-        weekView = new WeekView(model);
-        monthView = new MonthView(model);
+        // Get the different View Strategies
+        viewContext = new ViewContext(new DayView(model));
+        dayView = (DayView) viewContext.getView();
+        viewContext = new ViewContext(new WeekView(model));
+        weekView = (WeekView) viewContext.getView();
+        viewContext = new ViewContext(new MonthView(model));
+        monthView = (MonthView) viewContext.getView();
         model.attach(dayView);
         model.attach(weekView);
         model.attach(monthView);
 
         this.setTitle("Calendar");
-        this.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         this.setLayout(new BorderLayout());
         this.createLeftPanel();
         this.createRightPanel();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setVisible(true);
     }
 
@@ -99,7 +108,8 @@ public class CalendarView extends JFrame implements ChangeListener
         JButton buttonToday = new JButton("Today");
         buttonToday.addActionListener(event ->
         {
-            model.setCal(new GregorianCalendar());
+            model.setDay(model.getToday());
+            model.setMonth(model.getMonth());
         });
 
         JButton buttonPrevDay = new JButton("<");
@@ -192,18 +202,26 @@ public class CalendarView extends JFrame implements ChangeListener
                     System.out.println(theYear);
                 }
 
-                if (startingTime.equals("") || endingTime.equals(""))
+                if (startingTime.equals(""))
                 {
                     System.out.println("no events created");
                 }
                 else
                 {
                     int startingHour = Integer.parseInt(startingTime);
-                    int endingHour = Integer.parseInt(endingTime);
                     System.out.println(startingHour);
-                    System.out.println(endingHour);
+                    
+                    boolean isEventCreated = false;
+                    if("".equals(endingTime)) {
+                    	isEventCreated = model.createEvent(eventTitle, theYear, theMonth, theDay, startingHour);
+                    } else {
+                    	int endingHour = Integer.parseInt(endingTime);
+                    	System.out.println(endingHour);
+                    	isEventCreated = model.createEvent(eventTitle, theYear, theMonth, theDay, startingHour, endingHour);
+                    }
+                    
                     // Controller
-                    if(!model.createEvent(eventTitle, theYear, theMonth, theDay, startingHour, endingHour)) {
+                    if(!isEventCreated) {
                     	JOptionPane.showMessageDialog(null, "Conflicting event found! Event not created. Please try again with a different time.",
                     			"Event Info", JOptionPane.WARNING_MESSAGE);
                     } else {
@@ -268,10 +286,11 @@ public class CalendarView extends JFrame implements ChangeListener
         
         for (int i = 0; i < MAX_DAY_BUTTONS; i++)
         {
-            final int day = Integer.parseInt(dayButton[i].getText());
             // Add action listener to the buttons
+        	final int index = i;
             dayButton[i].addActionListener(event ->
             {
+            	int day = Integer.parseInt(dayButton[index].getText());
             	model.setDay(day);
             	eventList = model.getEventInSelectedView("day");
                 updateDayButtons();
@@ -376,36 +395,70 @@ public class CalendarView extends JFrame implements ChangeListener
         rightButtonPanel.add(buttonFromFile);
 
         rightPanel.add(rightButtonPanel, BorderLayout.NORTH);
+        
+        // Default highlight
+        buttonDay.setBackground(Color.GREEN);
+        buttonDay.setOpaque(true);
+        buttonDay.setBorderPainted(true);
 
         buttonDay.addActionListener(event ->
         {
-        	eventList = model.getEventInSelectedView("day");
-            System.out.println(eventList.toString());
             weekView.setVisible(false);
             monthView.setVisible(false);
             rightPanel.remove(1);
             rightPanel.add(dayView,BorderLayout.CENTER);
             dayView.setVisible(true);
+            
+            // Change highlights
+            buttonDay.setBackground(Color.GREEN);
+            buttonDay.setOpaque(true);
+            buttonDay.setBorderPainted(true);
+            buttonWeek.setBackground(null);
+            buttonWeek.setOpaque(false);
+            buttonWeek.setBorderPainted(true);
+            buttonMonth.setBackground(null);
+            buttonMonth.setOpaque(false);
+            buttonMonth.setBorderPainted(true);
         });
 
         buttonWeek.addActionListener(event ->
         {
-        	eventList = model.getEventInSelectedView("week");
             dayView.setVisible(false);
             monthView.setVisible(false);
             rightPanel.remove(1);
             rightPanel.add(weekView, BorderLayout.CENTER);
             weekView.setVisible(true);
+            
+            // Change highlights
+            buttonWeek.setBackground(Color.GREEN);
+            buttonWeek.setOpaque(true);
+            buttonWeek.setBorderPainted(true);
+            buttonDay.setBackground(null);
+            buttonDay.setOpaque(false);
+            buttonDay.setBorderPainted(true);
+            buttonMonth.setBackground(null);
+            buttonMonth.setOpaque(false);
+            buttonMonth.setBorderPainted(true);
         });
 
         buttonMonth.addActionListener(event ->
         {
-        	eventList = model.getEventInSelectedView("month");
         	dayView.setVisible(false);
         	weekView.setVisible(false);
             rightPanel.remove(1);
             rightPanel.add(monthView, BorderLayout.CENTER);
             monthView.setVisible(true);
+            
+            // Change highlights
+            buttonMonth.setBackground(Color.GREEN);
+            buttonMonth.setOpaque(true);
+            buttonMonth.setBorderPainted(true);
+            buttonWeek.setBackground(null);
+            buttonWeek.setOpaque(false);
+            buttonWeek.setBorderPainted(true);
+            buttonDay.setBackground(null);
+            buttonDay.setOpaque(false);
+            buttonDay.setBorderPainted(true);
         });
 
         buttonAgenda.addActionListener(event ->

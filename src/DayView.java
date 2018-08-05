@@ -1,3 +1,7 @@
+/**
+ * DayView.java
+ * @author Team 9: Parnika De, Viet Dinh, Sijia Gao, and David Janda
+ */
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -223,7 +227,7 @@ public class DayView extends JPanel implements ChangeListener, View
         DAYS[] arrayOfDays = DAYS.values();
         int day = calendar.get(Calendar.DATE);
         int dayofweek = calendar.get(Calendar.DAY_OF_WEEK);
-        String s = arrayOfDays[dayofweek] + " " + Integer.toString(day);
+        String s = arrayOfDays[dayofweek] + " " + Integer.toString(day) + " [Day View]";
         dateLabel.setText(s);
     }
 }

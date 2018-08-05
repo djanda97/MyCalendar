@@ -1,3 +1,7 @@
+/**
+ * DataModel.java
+ * @author Team 9: Parnika De, Viet Dinh, Sijia Gao, and David Janda
+ */
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.io.*;
@@ -43,15 +47,6 @@ public class DataModel
     }
 
     /**
-     * Gets the current day.
-     * @return The current day.
-     */
-    public int getToday()
-    {
-        return Calendar.getInstance().get(Calendar.DATE);
-    }
-
-    /**
      * Sets the day of the event.
      * @param eventDay Day of the event.
      */
@@ -89,12 +84,40 @@ public class DataModel
     }
     
     /**
+     * Gets the current day.
+     * @return The current day.
+     */
+    public int getToday()
+    {
+        return Calendar.getInstance().get(Calendar.DATE);
+    }
+
+    /**
+     * Gets the current month.
+     * @return The current month.
+     */
+    public int getMonth()
+    {
+        return Calendar.getInstance().get(Calendar.MONTH);
+    }
+
+    /**
      * Sets the current day.
      * @param day Current day.
      */
     public void setDay(int day)
     {
-        this.cal.set(Calendar.DAY_OF_MONTH, day);
+        cal.set(Calendar.DATE, day);
+        update();
+    }
+
+    /**
+     * Sets the current month.
+     * @param month Current month.
+     */
+    public void setMonth(int month)
+    {
+        cal.set(Calendar.MONTH, month);
         update();
     }
 
@@ -104,7 +127,7 @@ public class DataModel
      */
     public int getEventDay()
     {
-        return this.eventDay;
+        return eventDay;
     }
 
     /**
@@ -113,7 +136,7 @@ public class DataModel
      */
     public int getEventMonth()
     {
-        return this.eventMonth;
+        return eventMonth;
     }
 
     /**
@@ -122,7 +145,7 @@ public class DataModel
      */
     public int getEventYear()
     {
-        return this.eventYear;
+        return eventYear;
     }
 
     /**
@@ -411,7 +434,8 @@ public class DataModel
      */
     public void nextMonth()
     {
-    	cal.add(Calendar.MONTH, 1);
+        cal.add(Calendar.MONTH, 1);
+        cal.set(Calendar.DATE, 1);
     	update();
     }
     
@@ -429,7 +453,8 @@ public class DataModel
      */
     public void prevMonth()
     {
-    	cal.add(Calendar.MONTH, -1);
+        cal.add(Calendar.MONTH, -1);
+        cal.set(Calendar.DATE, 1);
     	update();
     }
 
