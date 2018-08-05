@@ -173,21 +173,17 @@ public class MonthView extends JPanel implements ChangeListener, View
     @Override
     public JTable timeTable(){
         TableModel model = new DefaultTableModel(TIME_ROWS, TIME_COLUMN);
-        for (int i = 1; i < 13; ++i)
-        {
-            String s = " " + i + "am"; 
-            model.setValueAt(s, i, TIME_COLUMN - 1);
-        }
-
-        for (int i = 1; i < 12; ++i)
-        {
-            String s = " " + i + "pm"; 
-            model.setValueAt(s, i+12, TIME_COLUMN - 1);
-        }
 
         JTable t = new JTable(model);
         for (int i = 0; i < TIME_ROWS; ++i)
         {
+        	String s = " "; 
+        	if(i < 9)
+        		s += "0";
+        	s += (i+1) + ":00";
+        	if(i < TIME_ROWS-2)
+        		model.setValueAt(s, i + 1, TIME_COLUMN - 1);
+        	
             t.setRowHeight(i, ROW_HEIGHT);
         }
         return t;
