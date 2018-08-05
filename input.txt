@@ -2,7 +2,7 @@ Homework;2018;1;2;SMTW;13;15;
 CS-151;2018;6;8;TH;9;11;
 Meeting;2018;6;8;TA;12;14;
 Practice;2018;8;12;MWF;16;18;
-Read;2018;6;9;MWA;9;11;
+Read;2018;6;8;MWA;9;11;
 Write;2018;8;9;STH;19;20;
 Exercise;2018;1;4;MWF;7;8;
 Shop;2018;11;12;A;16;17;
