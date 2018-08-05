@@ -202,18 +202,26 @@ public class CalendarView extends JFrame implements ChangeListener
                     System.out.println(theYear);
                 }
 
-                if (startingTime.equals("") || endingTime.equals(""))
+                if (startingTime.equals(""))
                 {
                     System.out.println("no events created");
                 }
                 else
                 {
                     int startingHour = Integer.parseInt(startingTime);
-                    int endingHour = Integer.parseInt(endingTime);
                     System.out.println(startingHour);
-                    System.out.println(endingHour);
+                    
+                    boolean isEventCreated = false;
+                    if("".equals(endingTime)) {
+                    	isEventCreated = model.createEvent(eventTitle, theYear, theMonth, theDay, startingHour);
+                    } else {
+                    	int endingHour = Integer.parseInt(endingTime);
+                    	System.out.println(endingHour);
+                    	isEventCreated = model.createEvent(eventTitle, theYear, theMonth, theDay, startingHour, endingHour);
+                    }
+                    
                     // Controller
-                    if(!model.createEvent(eventTitle, theYear, theMonth, theDay, startingHour, endingHour)) {
+                    if(!isEventCreated) {
                     	JOptionPane.showMessageDialog(null, "Conflicting event found! Event not created. Please try again with a different time.",
                     			"Event Info", JOptionPane.WARNING_MESSAGE);
                     } else {
