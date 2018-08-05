@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
@@ -20,9 +21,9 @@ public class WeekView extends JPanel implements ChangeListener, View
     private static final int ROW_HEIGHT = 64;
     private static final int COLUMN_WIDTH = 150;
     private TableModel eventTableModel;
-    private JLabel dateLabel;
     private JTable eventTable;
-    private int tempDate[];
+    private int tempDate[]; 
+    HashMap<Integer, Point> index;
 
     /**
      * Constructor that sets up the week view.
@@ -33,21 +34,21 @@ public class WeekView extends JPanel implements ChangeListener, View
         model = dataModel;
         calendar = model.getCal();
         eventTableModel = new DefaultTableModel(TIME_ROWS,WEEK_COLUMNS);
-        tempDate = new int[]{calendar.get(Calendar.DATE),calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.YEAR)};
+        tempDate = new int[]{calendar.get(Calendar.WEEK_OF_MONTH),calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.YEAR)};
+        index = dayIndex();
 
         setLayout(new BorderLayout());
         JScrollPane scrollPane = new JScrollPane();
-        dateLabel = new JLabel();
-        updateLabel();
 
         JPanel fullPanel = new JPanel(new BorderLayout());
         eventTable = createEventTable();
+        updateLabel();
         updateEventTable();
         fullPanel.add(timeTable(), BorderLayout.WEST);
         fullPanel.add(eventTable, BorderLayout.CENTER);
         scrollPane.setViewportView(fullPanel);
         
-        add(dateLabel, BorderLayout.NORTH);
+        add(new JLabel(""), BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
     }
 
@@ -69,7 +70,6 @@ public class WeekView extends JPanel implements ChangeListener, View
     @Override
     public void stateChanged(ChangeEvent event)
     {
-        updateLabel();
         updateEventTable();   
     }
 
@@ -82,10 +82,11 @@ public class WeekView extends JPanel implements ChangeListener, View
     {
         for (int i = 0; i < TIME_ROWS; ++i)
         {
-            for (int j = 0; j < WEEK_COLUMNS; ++j)
+            for (int j = 1; j < WEEK_COLUMNS; ++j)
             {
-                eventTableModel.setValueAt(0, i, j);
+                eventTableModel.setValueAt(" ", i, j);
             }
+            eventTableModel.setValueAt(0, i, 0);
         }
         JTable t = new JTable(eventTableModel)
         {
@@ -97,7 +98,7 @@ public class WeekView extends JPanel implements ChangeListener, View
                 {
                     c.setBackground(getBackground());
                     int modelRow = convertRowIndexToModel(row);
-                    int data = (int)getModel().getValueAt(modelRow, COLUMNS - 1);
+                    int data = (int)getModel().getValueAt(modelRow, 0);
                     if (data == 1) c.setBackground(Color.YELLOW);
                     if (data == 2) c.setBackground(new Color(176,224,230));
                     if (data == 3) c.setBackground(Color.RED);
@@ -174,31 +175,44 @@ public class WeekView extends JPanel implements ChangeListener, View
     public void updateEventTable(){
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH)+1; 
-        int day = calendar.get(Calendar.DATE);
-
-        if (tempDate[0] != day || tempDate[1] != month || tempDate[2] != year)
+        int week = calendar.get(Calendar.WEEK_OF_MONTH);
+        
+        if ( tempDate[0] != week || tempDate[1] != month || tempDate[2] != year)
         {
-            for (int i = 0; i < TIME_ROWS; ++i)
+            for (int i = 1; i < TIME_ROWS; ++i)
             {
-                eventTableModel.setValueAt("", i, COLUMNS - 2);
-                eventTableModel.setValueAt(0, i, COLUMNS - 1);
+                for(int j = 0; j < WEEK_COLUMNS; ++j){
+                    eventTableModel.setValueAt(" ", i, j);
+                }
+                eventTableModel.setValueAt(0, i, 0);
             } 
-            tempDate[0] = day;
+            tempDate[0] = week;
+            tempDate[1] = month;
+            tempDate[2] = year;
+            updateLabel();
+        }
+
+        if (tempDate[1] != month || tempDate[2] != year){
+            index = dayIndex();
             tempDate[1] = month;
             tempDate[2] = year;
         }
+        
 
-        List<Event> eventList = model.getEventInSelectedView(year, month, day, year, month, day);
+        List<Event> eventList = model.getEventInSelectedView("week");
 
         int hiddenData = 1;
         for (Event event: eventList)
         {
-            int eventIndex = ((int)event.getStartHour() - 1);
-            int hightlightIndex = ((int)event.getEndHour() - 1);
-            eventTableModel.setValueAt(event.getName(), eventIndex, COLUMNS - 2);
-            for (int i = eventIndex; i <= hightlightIndex; ++i)
+            int eventIndex = (int)event.getStartHour();
+            int hightlightIndex = (int)event.getEndHour();
+            Point point = index.get(event.getDay());
+            eventTableModel.setValueAt(event.getName(), eventIndex, point.x);
+            System.out.println(point.toString());
+     
+            for (int j = eventIndex; j <= hightlightIndex; ++j)
             {
-                eventTableModel.setValueAt(hiddenData, i, COLUMNS - 1);
+                eventTableModel.setValueAt(hiddenData, j, 0);
             }
             ++hiddenData;
         }
@@ -218,10 +232,42 @@ public class WeekView extends JPanel implements ChangeListener, View
     @Override
     public void updateLabel()
     {
-        DAYS[] arrayOfDays = DAYS.values();
-        int day = calendar.get(Calendar.DATE);
-        int dayofweek = calendar.get(Calendar.DAY_OF_WEEK);
-        String s = arrayOfDays[dayofweek] + " " + Integer.toString(day);
-        dateLabel.setText(s);
+        DAYS[] arrayOfDays = DAYS.values();    
+        int week  = calendar.get(Calendar.WEEK_OF_MONTH);
+		GregorianCalendar temp = new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), 1);
+        int startDay = temp.get(Calendar.DAY_OF_WEEK) - 1;
+
+        for(int i = 1; i < WEEK_COLUMNS; ++i){
+            StringBuffer s = new StringBuffer();
+            s.append(arrayOfDays[i]);
+            s.append(" ");
+            if(i > startDay && week == 1) s.append(i-startDay);
+            else if(week != 1){
+                s.append(week*7-(6+startDay)+i-1);
+            }
+
+            eventTableModel.setValueAt(s.toString(), 0, i);
+            
+        }
+    }
+
+    public HashMap<Integer,Point> dayIndex(){
+        HashMap<Integer,Point> map = new HashMap<>();
+		GregorianCalendar temp = new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), 1);
+        int startDay = temp.get(Calendar.DAY_OF_WEEK);
+        int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+        int x = startDay;
+        int y = 1;
+        for(int i = 1; i <= maxDays; ++i){
+            map.put(i, new Point(x, y));
+            ++x;
+            if(x-1 % 7 == 0){
+                x = 1;
+                ++y;
+            }
+        }
+
+        return map;
     }
 }
