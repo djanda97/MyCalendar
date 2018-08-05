@@ -33,7 +33,7 @@ public class Event
 	   this.day = day;
 	   this.startHour = startHour;
 	   this.endHour = 23;
-	   cal = new GregorianCalendar(year, startMonth, day);
+	   cal = new GregorianCalendar(year, startMonth-1, day);
 	}
 
     /**
@@ -55,7 +55,7 @@ public class Event
         this.day = day;
         this.startHour = startHour;
         this.endHour = endHour;
-        cal = new GregorianCalendar(year, startMonth, day);
+        cal = new GregorianCalendar(year, startMonth-1, day);
     }
 
     /**
@@ -78,7 +78,7 @@ public class Event
         this.day = day;
         this.startHour = startHour;
         this.endHour = endHour;
-        cal = new GregorianCalendar(year, startMonth, day);
+        cal = new GregorianCalendar(year, startMonth-1, day);
     }
 
     /**
