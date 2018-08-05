@@ -18,12 +18,12 @@ public class MonthView extends JPanel implements ChangeListener, View
 	private DataModel model;
     private static Calendar calendar;
     
-    private static final int TIME_ROWS = 24;
+    private static final int TIME_ROWS = 25;
     private static final int TIME_COLUMN = 1;
     private static final int MONTH_COLUMNS = 32;
     private static final int COLUMNS = 2;
-    private static final int ROW_HEIGHT = 32;
-    private static final int COLUMN_WIDTH = 100;
+    private static final int ROW_HEIGHT = 38;
+    private static final int COLUMN_WIDTH = 150;
     private TableModel eventTableModel;
     private JLabel dateLabel;
     private JTable eventTable;
