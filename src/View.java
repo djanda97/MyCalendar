@@ -6,9 +6,10 @@ import javax.swing.JTable;
 
 /**
  * This interface is the View for the day, week, and month view.
- * and serves as the Strategy interface
+ * Serves as the Strategy interface.
  */
-public interface View {
+public interface View
+{
 	abstract JTable createEventTable();
 	abstract JTable timeTable();
 	abstract void updateEventTable();
