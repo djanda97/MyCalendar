@@ -241,21 +241,26 @@ public class WeekView extends JPanel implements ChangeListener, View
 		GregorianCalendar temp = new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), 1);
         int startDay = temp.get(Calendar.DAY_OF_WEEK) - 1;
 
-        for(int i = 1; i < WEEK_COLUMNS; ++i){
+        for (int i = 1; i < WEEK_COLUMNS; ++i)
+        {
             StringBuffer s = new StringBuffer();
             s.append(arrayOfDays[i]);
             s.append(" ");
-            if(i > startDay && week == 1) s.append(i-startDay);
-            else if(week != 1){
-                s.append(week*7-(6+startDay)+i-1);
+            if (i > startDay && week == 1)
+            {
+                s.append(i-startDay);
+            }
+            else if (week != 1)
+            {
+                s.append(week * 7 - (6 + startDay) + i - 1);
             }
 
             eventTableModel.setValueAt(s.toString(), 0, i);
-            
         }
     }
 
-    public HashMap<Integer,Point> dayIndex(){
+    public HashMap<Integer,Point> dayIndex()
+    {
         HashMap<Integer,Point> map = new HashMap<>();
 		GregorianCalendar temp = new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), 1);
         int startDay = temp.get(Calendar.DAY_OF_WEEK);
@@ -263,10 +268,12 @@ public class WeekView extends JPanel implements ChangeListener, View
 
         int x = startDay;
         int y = 1;
-        for(int i = 1; i <= maxDays; ++i){
+        for (int i = 1; i <= maxDays; ++i)
+        {
             map.put(i, new Point(x, y));
             ++x;
-            if(x-1 % 7 == 0){
+            if (x-1 % 7 == 0)
+            {
                 x = 1;
                 ++y;
             }
