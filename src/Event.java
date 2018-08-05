@@ -1,7 +1,5 @@
-/**
- * Event.java
- * @author Team 9: Parnika De, Viet Dinh, Sijia Gao, and David Janda
- */
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * This class describes a calendar event.
@@ -15,6 +13,7 @@ public class Event
     private int day;
     private double startHour;
     private double endHour;
+    private GregorianCalendar cal;
     
     /**
      * Constructor for single event wihtout endHour.
@@ -34,6 +33,7 @@ public class Event
 	   this.day = day;
 	   this.startHour = startHour;
 	   this.endHour = 23;
+	   cal = new GregorianCalendar(year, startMonth, day);
 	}
 
     /**
@@ -55,6 +55,7 @@ public class Event
         this.day = day;
         this.startHour = startHour;
         this.endHour = endHour;
+        cal = new GregorianCalendar(year, startMonth, day);
     }
 
     /**
@@ -77,6 +78,7 @@ public class Event
         this.day = day;
         this.startHour = startHour;
         this.endHour = endHour;
+        cal = new GregorianCalendar(year, startMonth, day);
     }
 
     /**
@@ -203,6 +205,15 @@ public class Event
     public void setEndHour(int endHour)
     {
         this.endHour = endHour;
+    }
+    
+    /**
+     * Gets the day of the week of the event
+     * @return Day of week of the event
+     */
+    public int getDayOfWeek()
+    {
+    	return this.cal.get(Calendar.DAY_OF_WEEK);
     }
     
     /**
