@@ -232,7 +232,6 @@ public class MonthView extends JPanel implements ChangeListener, View
         		hiddenDataString += hiddenData[i][j] + ":";
         	}
         	hiddenDataString += "-";
-        	//System.out.println(hiddenDataString);
         }
 
         eventTableModel.setValueAt(hiddenDataString, 0, COLUMNS - 2);

@@ -178,11 +178,15 @@ public class WeekView extends JPanel implements ChangeListener, View
         for (int i = 0; i < TIME_ROWS; ++i)
         {
         	String s = " "; 
-        	if(i < 9)
-        		s += "0";
+            if (i < 9)
+            {
+                s += "0";
+            }
         	s += (i+1) + ":00";
-        	if(i < TIME_ROWS-2)
-        		model.setValueAt(s, i + 1, TIME_COLUMN - 1);
+            if (i < TIME_ROWS - 2)
+            {
+                model.setValueAt(s, i + 1, TIME_COLUMN - 1);
+            }
         	
             t.setRowHeight(i, ROW_HEIGHT);
         }
@@ -232,7 +236,6 @@ public class WeekView extends JPanel implements ChangeListener, View
         		hiddenDataString += hiddenData[i][j] + ":";
         	}
         	hiddenDataString += "-";
-        	//System.out.println(hiddenDataString);
         }
 
         eventTableModel.setValueAt(hiddenDataString, 0, COLUMNS - 2);

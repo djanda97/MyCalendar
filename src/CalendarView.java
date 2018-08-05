@@ -419,6 +419,9 @@ public class CalendarView extends JFrame implements ChangeListener
             buttonMonth.setBackground(null);
             buttonMonth.setOpaque(false);
             buttonMonth.setBorderPainted(true);
+            buttonAgenda.setBackground(null);
+            buttonAgenda.setOpaque(false);
+            buttonAgenda.setBorderPainted(true);
         });
 
         buttonWeek.addActionListener(event ->
@@ -439,6 +442,9 @@ public class CalendarView extends JFrame implements ChangeListener
             buttonMonth.setBackground(null);
             buttonMonth.setOpaque(false);
             buttonMonth.setBorderPainted(true);
+            buttonAgenda.setBackground(null);
+            buttonAgenda.setOpaque(false);
+            buttonAgenda.setBorderPainted(true);
         });
 
         buttonMonth.addActionListener(event ->
@@ -459,20 +465,37 @@ public class CalendarView extends JFrame implements ChangeListener
             buttonDay.setBackground(null);
             buttonDay.setOpaque(false);
             buttonDay.setBorderPainted(true);
+            buttonAgenda.setBackground(null);
+            buttonAgenda.setOpaque(false);
+            buttonAgenda.setBorderPainted(true);
         });
 
         buttonAgenda.addActionListener(event ->
         {
+            // Change highlights
+            buttonAgenda.setBackground(Color.GREEN);
+            buttonAgenda.setOpaque(true);
+            buttonAgenda.setBorderPainted(true);
+            buttonDay.setBackground(null);
+            buttonDay.setOpaque(false);
+            buttonDay.setBorderPainted(false);
+            buttonWeek.setBackground(null);
+            buttonWeek.setOpaque(false);
+            buttonWeek.setBorderPainted(true);
+            buttonMonth.setBackground(null);
+            buttonMonth.setOpaque(false);
+            buttonMonth.setBorderPainted(true);
+
             JTextField textFieldStartingDate = new JTextField( 10);
             JTextField textFieldEndingDate = new JTextField( 10);
 
             JPanel myPanel = new JPanel();
 
             // Ask user input
-            myPanel.add(new JLabel("Starting date: (DD/MM/YYYY)"));
+            myPanel.add(new JLabel("Starting date: (MM/DD/YYYY)"));
             myPanel.add(textFieldStartingDate);
             myPanel.add(Box.createVerticalStrut(15));
-            myPanel.add(new JLabel("Ending date: (DD/MM/YYYY)"));
+            myPanel.add(new JLabel("Ending date: (MM/DD/YYYY)"));
             myPanel.add(textFieldEndingDate);
 
             JOptionPane.showConfirmDialog(null, myPanel,
@@ -496,12 +519,12 @@ public class CalendarView extends JFrame implements ChangeListener
 
             if (!((startingDate.equals("") || endingDate.equals(""))))
             {
-                startingDay = Integer.parseInt(startingDate.substring(0, 2));
-                startingMonth = Integer.parseInt(startingDate.substring(3, 5));
+                startingMonth = Integer.parseInt(startingDate.substring(0, 2));
+                startingDay = Integer.parseInt(startingDate.substring(3, 5));
                 startingYear = Integer.parseInt(startingDate.substring(6));
 
-                endingDay = Integer.parseInt(endingDate.substring(0, 2));
-                endingMonth = Integer.parseInt(endingDate.substring(3, 5));
+                endingMonth = Integer.parseInt(endingDate.substring(0, 2));
+                endingDay = Integer.parseInt(endingDate.substring(3, 5));
                 endingYear = Integer.parseInt(endingDate.substring(6));
 
                 System.out.println(startingDay);
@@ -516,7 +539,24 @@ public class CalendarView extends JFrame implements ChangeListener
             eventList = model.getEventInSelectedView(startingYear, startingMonth, startingDay,
             		endingYear, endingMonth, endingDay);
 
-            System.out.println(eventList.toString());
+            JPanel agendaPanel = new JPanel();
+            JTextArea agendaArea = new JTextArea();
+
+            for (Event e: eventList)
+            {
+                int eventStartHour = (int) e.getStartHour();
+                int eventEndHour = (int) e.getEndHour();
+                String eventName = e.getName();
+                agendaArea.append(eventName + " " + eventStartHour + " - " + eventEndHour + "\n");
+            }
+
+            dayView.setVisible(false);
+            weekView.setVisible(false);
+            monthView.setVisible(false);
+            rightPanel.remove(1);
+            agendaPanel.add(agendaArea);
+            rightPanel.add(agendaPanel, BorderLayout.CENTER);
+            agendaPanel.setVisible(true);
         });
 
         buttonFromFile.addActionListener(event ->
@@ -545,7 +585,7 @@ public class CalendarView extends JFrame implements ChangeListener
             			"File Read Info", JOptionPane.INFORMATION_MESSAGE);
             }
 
-        	//model.printEventList();
+        	model.printEventList();
         });
 
         rightPanel.add(dayView, BorderLayout.CENTER);
