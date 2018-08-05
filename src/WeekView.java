@@ -1,5 +1,5 @@
 /**
- * MonthView.java
+ * WeekView.java
  * @author Team 9: Parnika De, Viet Dinh, Sijia Gao, and David Janda
  */
 import java.awt.*;
@@ -10,7 +10,7 @@ import javax.swing.event.*;
 import javax.swing.table.*;
 
 /**
- * This class displays events that occur on the selected month.
+ * This class displays events that occur on the selected week.
  */
 public class WeekView extends JPanel implements ChangeListener, View
 {
@@ -29,7 +29,7 @@ public class WeekView extends JPanel implements ChangeListener, View
     private JTable eventTable;
 
     /**
-     * Constructor that sets up the month view.
+     * Constructor that sets up the week view.
      * @param dataModel DataModel object.
      */
     public WeekView(DataModel dataModel){
@@ -195,7 +195,7 @@ public class WeekView extends JPanel implements ChangeListener, View
     @Override
     public void updateEventTable()
     {
-        List<Event> eventList = model.getEventInSelectedView("month");
+        List<Event> eventList = model.getEventInSelectedView("week");
         int eventCount = 1;
         int hiddenDataRow = 1;
         int hiddenDataColumn = 1;
